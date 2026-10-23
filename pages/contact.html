@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Contact Habari Hub – reach our editorial team, send tips, or request corrections.">
+  <title>Contact Us | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}
+    .contact-grid{display:grid;grid-template-columns:1fr 380px;gap:var(--space-2xl);padding:var(--space-2xl) 0}
+    @media(max-width:800px){.contact-grid{grid-template-columns:1fr}}
+    .contact-form{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl)}
+    .form-group{margin-bottom:var(--space-md)}
+    .form-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:.35rem;color:var(--text-secondary)}
+    .form-control{width:100%;padding:.6rem 1rem;background:var(--bg-secondary);border:1px solid var(--border);color:var(--text-primary);border-radius:var(--radius);font-size:.95rem;transition:border-color var(--trans-fast)}
+    .form-control:focus{outline:none;border-color:var(--red)}
+    textarea.form-control{min-height:140px;resize:vertical}
+    .contact-info-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-xl)}
+    .info-item{display:flex;gap:.75rem;margin-bottom:var(--space-md)}
+    .info-icon{width:36px;height:36px;background:var(--red-subtle);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem}
+    .form-msg{padding:.75rem;border-radius:var(--radius);margin-bottom:var(--space-md);font-size:.875rem;display:none}
+    .form-msg.success{background:#064e3b;border:1px solid #10b981;color:#6ee7b7;display:block}
+    .form-msg.error{background:#5c1010;border:1px solid var(--red);color:#fca5a5;display:block}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+  <div class="page-hero"><div class="container"><h1>Contact Us</h1><p style="color:var(--text-muted)">We'd love to hear from you.</p></div></div>
+  <main>
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-form">
+          <h2 style="margin-bottom:var(--space-lg)">Send a Message</h2>
+          <div id="form-msg" class="form-msg"></div>
+          <form id="contact-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="name">Full Name *</label>
+              <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="email">Email Address *</label>
+              <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="subject">Subject *</label>
+              <input type="text" id="subject" name="subject" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="message">Message *</label>
+              <textarea id="message" name="message" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submit-btn" style="width:100%;justify-content:center;padding:.75rem">Send Message</button>
+          </form>
+        </div>
+        <aside class="contact-info-card">
+          <h3 style="margin-bottom:var(--space-lg)">Get in Touch</h3>
+          <div class="info-item">
+            <div class="info-icon">✉️</div>
+            <div><div style="font-weight:600;margin-bottom:.2rem">Email</div><a href="mailto:info@habarihub.co.ke" style="color:var(--red)">info@habarihub.co.ke</a></div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon">📍</div>
+            <div><div style="font-weight:600;margin-bottom:.2rem">Location</div><span style="color:var(--text-muted)">Nairobi, Kenya</span></div>
+          </div>
+          <hr class="divider">
+          <h4 style="margin-bottom:var(--space-md)">Editorial Tips</h4>
+          <p style="font-size:.875rem">Have a story tip or correction? Email our editorial desk directly. We take all tips seriously.</p>
+          <hr class="divider">
+          <h4 style="margin-bottom:var(--space-md)">Corrections Policy</h4>
+          <p style="font-size:.875rem">We correct errors promptly. Send correction requests with supporting evidence to our editorial email.</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
+    import { api } from '../assets/js/modules/api.js';
+    import { toast } from '../assets/js/modules/utils.js';
+    await renderHeader(); await renderFooter(); renderTicker();
+
+    document.getElementById('contact-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn=document.getElementById('submit-btn');
+      const msg=document.getElementById('form-msg');
+      btn.disabled=true; btn.textContent='Sending…'; msg.className='form-msg';
+      const data={
+        name:    document.getElementById('name').value.trim(),
+        email:   document.getElementById('email').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim(),
+      };
+      try{
+        const res=await api.contact(data);
+        msg.className='form-msg success'; msg.textContent=res.message||'Message sent successfully!';
+        e.target.reset();
+      }catch(err){
+        msg.className='form-msg error'; msg.textContent=err.message||'Failed to send message.';
+      }
+      btn.disabled=false; btn.textContent='Send Message';
+    });
+  </script>
+</body>
+</html>

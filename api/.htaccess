@@ -1,0 +1,53 @@
+Options -Indexes
+RewriteEngine On
+
+# Pass Authorization header to PHP in cPanel / FastCGI / PHP-FPM
+<IfModule mod_rewrite.c>
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+
+# ------------------------------------------------------------------
+# Serve existing files (including uploads) directly – do NOT rewrite
+# ------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# ------------------------------------------------------------------
+# Serve existing directories directly (e.g., /uploads/)
+# ------------------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ------------------------------------------------------------------
+# Existing routing rules
+# ------------------------------------------------------------------
+# Serve real files/directories directly (fallback, kept for safety)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Route everything under /api/ to index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# ------------------------------------------------------------------
+# PHP settings (guarded so cPanel / LiteSpeed won't throw 500)
+# ------------------------------------------------------------------
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 60
+</IfModule>
+<IfModule mod_php.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 12M
+    php_value max_execution_time 60
+</IfModule>
+
+# ------------------------------------------------------------------
+# Security headers
+# ------------------------------------------------------------------
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

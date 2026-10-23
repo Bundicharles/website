@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="About Habari Hub – Kenya's independent news and documentary platform.">
+  <title>About Us | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-2xl) 0;border-bottom:1px solid var(--border)}
+    .content-page{width:100%;max-width:100%;margin:0;padding:var(--space-2xl) 0}
+    .content-page h2{margin:var(--space-xl) 0 var(--space-md)}
+    .content-page p{margin-bottom:var(--space-md);line-height:1.8}
+    .values-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-lg);margin:var(--space-xl) 0}
+    .value-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:var(--space-lg)}
+    .value-icon{font-size:1.75rem;margin-bottom:var(--space-sm)}
+    .value-card h3{font-size:1rem;margin-bottom:.5rem}
+    .value-card p{font-size:.875rem;margin:0}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div class="page-hero"><div class="container"><h1>About Habari Hub</h1><p style="color:var(--text-muted);max-width:100%;margin-top:.5rem">Independent journalism from the heart of Kenya.</p></div></div>
+  <main>
+    <div class="container">
+      <div class="content-page">
+        <p>Habari Hub is an independent Kenyan digital media platform committed to delivering accurate, fair, and timely news, political analysis, and documentary journalism to audiences in Kenya and the diaspora.</p>
+        <p>We cover breaking news, parliamentary affairs, county government, economic stories, and produce long-form documentary content that goes beyond the headlines.</p>
+        <h2>Our Mission</h2>
+        <p>To inform, engage, and empower Kenyans through transparent, evidence-based journalism that holds power to account and amplifies underreported stories from every corner of Kenya.</p>
+        <h2>Our Values</h2>
+        <div class="values-grid">
+          <div class="value-card"><div class="value-icon">🎯</div><h3>Accuracy</h3><p>We verify before we publish. Corrections are issued promptly and transparently.</p></div>
+          <div class="value-card"><div class="value-icon">⚖️</div><h3>Fairness</h3><p>We present multiple perspectives and clearly label opinion, analysis, and reporting.</p></div>
+          <div class="value-card"><div class="value-icon">🔍</div><h3>Independence</h3><p>Our editorial decisions are free from political or commercial interference.</p></div>
+          <div class="value-card"><div class="value-icon">🤝</div><h3>Accountability</h3><p>We hold institutions and individuals accountable to the public interest.</p></div>
+        </div>
+        <h2>Editorial Standards</h2>
+        <p>Habari Hub publishes original content and attributed, permitted excerpts from partner sources. We do not reproduce full articles without rights. All documentary and video content uses authorized embeds. See our <a href="./editorial-policy.html" style="color:var(--red)">Editorial Policy</a> for full details.</p>
+        <h2>Contact</h2>
+        <p>For editorial enquiries, corrections, or tips, please <a href="./contact.html" style="color:var(--red)">contact our editorial team</a>.</p>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter } from '../assets/js/modules/components.js';
+    await renderHeader(); await renderFooter();
+  </script>
+</body>
+</html>

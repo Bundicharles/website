@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/admin/
+Disallow: /api/setup/
+
+Sitemap: https://habarihub.co.ke/sitemap.xml

@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Media Library | Habari Hub Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar" id="admin-sidebar">
+    <div class="sidebar-header"><div class="sidebar-logo-mark">HH</div><span class="sidebar-logo-text">Habari<span>Hub</span></span></div>
+    <nav class="sidebar-nav">
+      <a href="./dashboard.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
+      <a href="./articles.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Articles</a>
+      <a href="./article-edit.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>New Article</a>
+      <a href="./categories.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>Categories</a>
+      <a href="./media.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Media</a>
+      <a href="./settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+      <a href="./messages.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Messages</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info"><div class="user-avatar" id="sidebar-avatar">A</div><div><div class="user-name" id="sidebar-user-name">—</div><div class="user-role" id="sidebar-user-role">—</div></div></div>
+      <button class="btn btn-outline btn-sm" id="logout-btn" style="width:100%;justify-content:center">Sign Out</button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <header class="topbar">
+    <button class="btn btn-ghost sidebar-toggle" id="sidebar-toggle">☰</button>
+    <span class="topbar-title">Media Library</span>
+    <label class="btn btn-primary btn-sm" style="cursor:pointer">
+      Upload Media
+      <input type="file" id="upload-input" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg,video/quicktime" style="display:none" multiple>
+    </label>
+  </header>
+  <main class="main-content">
+    <div id="upload-progress" class="alert info" style="display:none">Uploading files…</div>
+    <div id="media-grid" class="media-grid"></div>
+    <div id="pagination-container" style="margin-top:1rem"></div>
+
+    <!-- Detail lightbox -->
+    <div id="media-detail" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;align-items:center;justify-content:center">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem;max-width:560px;width:90%;position:relative">
+        <button id="close-detail" style="position:absolute;top:.75rem;right:.75rem;color:var(--muted);font-size:1.25rem;cursor:pointer;background:none;border:none;line-height:1">✕</button>
+        <div id="detail-media" style="width:100%;border-radius:6px;margin-bottom:1rem;max-height:280px;object-fit:cover;display:flex;align-items:center;justify-content:center;background:#000">
+          <img id="detail-img" src="" alt="" style="width:100%;display:none">
+          <video id="detail-video" controls style="width:100%;display:none" preload="metadata"></video>
+        </div>
+        <p style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem" id="detail-name"></p>
+        <div id="detail-url" style="font-family:monospace;font-size:.75rem;background:var(--bg);padding:.5rem .75rem;border-radius:4px;word-break:break-all;margin-bottom:.75rem"></div>
+        <button class="btn btn-primary btn-sm" id="copy-url-btn">Copy URL</button>
+      </div>
+    </div>
+  </main>
+</div>
+<div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { requireAuth, initSidebar, adminFetch, esc, toast, renderPagination, getAppBase } from './assets/js/admin-core.js';
+  const user = await requireAuth(); initSidebar(user);
+  const base = getAppBase();
+
+  let currentPage = 1;
+  const grid    = document.getElementById('media-grid');
+  const pagCon  = document.getElementById('pagination-container');
+  const detail  = document.getElementById('media-detail');
+
+  async function load() {
+    grid.innerHTML = '<p style="color:var(--muted);padding:1rem">Loading…</p>';
+    try {
+      const res   = await adminFetch(`/admin/media?page=${currentPage}&per_page=48`);
+      const items = res.data ?? [];
+      if (!items.length) { grid.innerHTML = '<p style="color:var(--muted)">No media uploaded yet. Use the upload button above.</p>'; return; }
+      grid.innerHTML = items.map(m => {
+        const fullUrl = m.path.startsWith('http') ? m.path : (base + m.path);
+        const isVideo = m.media_type === 'video';
+        const mediaEl = isVideo
+          ? `<video src="${esc(fullUrl)}" muted preload="none" style="width:100%;height:100%;object-fit:cover;border-radius:4px">
+             <source src="${esc(fullUrl)}" type="${esc(m.mime_type)}"></video>`
+          : `<img src="${esc(fullUrl)}" alt="${esc(m.original_name)}" loading="lazy" onerror="this.parentElement.style.background='#1a1a1a'">`;
+        const duration = m.duration ? `<span style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);color:#fff;font-size:.65rem;padding:2px 4px;border-radius:3px">${Math.floor(m.duration/60)}:${String(m.duration%60).padStart(2,'0')}</span>` : '';
+        return `<div class="media-item" data-url="${esc(fullUrl)}" data-name="${esc(m.original_name)}" data-type="${esc(isVideo?'video':'image')}" data-mime="${esc(m.mime_type)}" title="${esc(m.original_name)}" style="position:relative">
+         ${mediaEl}
+         ${isVideo ? '<div style="position:absolute;top:4px;left:4px;background:#7B1FA2;color:#fff;font-size:.6rem;padding:2px 6px;border-radius:3px">VIDEO</div>' : ''}
+         ${duration}
+       </div>`;
+      }).join('');
+      grid.querySelectorAll('.media-item').forEach(el => {
+        el.addEventListener('click', () => {
+          const isVideo = el.dataset.type === 'video';
+          const imgEl   = document.getElementById('detail-img');
+          const vidEl   = document.getElementById('detail-video');
+          if (isVideo) {
+            imgEl.style.display = 'none';
+            vidEl.style.display = 'block';
+            vidEl.innerHTML = '';
+            const src = el.dataset.url;
+            vidEl.querySelector('source')?.remove();
+            vidEl.innerHTML = `<source src="${esc(src)}" type="${esc(el.dataset.mime || 'video/mp4')}">`;
+          } else {
+            vidEl.style.display = 'none';
+            imgEl.style.display = 'block';
+            imgEl.src = el.dataset.url;
+          }
+          document.getElementById('detail-name').textContent = el.dataset.name;
+          document.getElementById('detail-url').textContent  = window.location.origin + el.dataset.url;
+          detail.style.display = 'flex';
+        });
+      });
+      renderPagination(pagCon, res.meta, p => { currentPage = p; load(); });
+    } catch (err) { grid.innerHTML = `<p style="color:#fca5a5">${esc(err.message)}</p>`; }
+  }
+
+  document.getElementById('close-detail').addEventListener('click', () => { detail.style.display = 'none'; });
+  detail.addEventListener('click', e => { if (e.target === detail) detail.style.display = 'none'; });
+  document.getElementById('copy-url-btn').addEventListener('click', () => {
+    const url = document.getElementById('detail-url').textContent;
+    navigator.clipboard?.writeText(url).then(() => toast('URL copied!', 'success'));
+  });
+
+  document.getElementById('upload-input').addEventListener('change', async e => {
+    const files = [...e.target.files]; if (!files.length) return;
+    document.getElementById('upload-progress').style.display = 'block';
+    for (const file of files) {
+      const fd = new FormData(); fd.append('file', file);
+      try { await adminFetch('/admin/media', { method:'POST', body:fd, headers:{} }); toast(file.name + ' uploaded.', 'success'); }
+      catch (err) { toast(file.name + ': ' + err.message, 'error'); }
+    }
+    document.getElementById('upload-progress').style.display = 'none';
+    e.target.value = ''; load();
+  });
+
+  load();
+</script>
+</body>
+</html>

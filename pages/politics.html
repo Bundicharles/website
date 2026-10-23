@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Kenyan political news, analysis, and commentary from Habari Hub. Parliament, counties, elections, and policy.">
+  <title>Political News | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:2px solid var(--red)}
+    .content-label{display:inline-block;background:var(--red-subtle);color:var(--red);border:1px solid var(--red-dark);border-radius:var(--radius-sm);padding:2px 8px;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-left:.5rem}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+  <div class="page-hero">
+    <div class="container">
+      <div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap">
+        <h1>Political News</h1>
+        <span class="content-label">Kenya</span>
+      </div>
+      <p style="color:var(--text-muted);margin-top:.25rem">In-depth reporting and analysis on Kenyan politics, parliament, elections, and county affairs.</p>
+      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem;border-left:3px solid var(--red);padding-left:.75rem">Opinion and analysis pieces are clearly labelled. Habari Hub does not fabricate political claims, quotations, or statistics.</p>
+    </div>
+  </div>
+  <main style="padding:var(--space-2xl) 0">
+    <div class="container">
+      <div id="featured-politics" style="margin-bottom:var(--space-2xl)"></div>
+      <div class="section-header">
+        <h2 class="section-title">All Political Coverage</h2>
+      </div>
+      <div id="politics-grid" class="grid-3"></div>
+      <div id="pagination-container"></div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
+    import { api } from '../assets/js/modules/api.js';
+    import { getAppBase, cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc } from '../assets/js/modules/utils.js';
+    await renderHeader('Politics'); await renderFooter(); renderTicker();
+
+    let currentPage=1;
+    const base=getAppBase();
+    const grid=document.getElementById('politics-grid');
+    const pag=document.getElementById('pagination-container');
+
+    async function loadFeatured(){
+      try{
+        const res=await api.politics({per_page:1,page:1});
+        const items=res.data??[];
+        if(!items.length)return;
+        const s=items[0];
+        const featured=document.getElementById('featured-politics');
+        featured.innerHTML=`<article class="hero-card" style="min-height:380px">
+          <div class="hero-card-img">
+            <img src="${imgSrc(s.featured_image)}" alt="${esc(s.title)}" loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
+          </div>
+          <div class="hero-card-body">
+            <span class="badge" style="margin-bottom:.5rem">Politics</span>
+            <h2 class="hero-card-title" style="font-size:clamp(1.25rem,3vw,2rem)">
+              <a href="${base}/article.html?slug=${esc(s.slug)}" style="color:inherit">${esc(s.title)}</a>
+            </h2>
+            <p class="hero-card-excerpt">${esc(s.excerpt||'')}</p>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <a href="${base}/article.html?slug=${esc(s.slug)}" class="btn btn-primary">Read More →</a>
+              <time style="color:var(--text-muted);font-size:.85rem">${timeAgo(s.published_at)}</time>
+            </div>
+          </div>
+        </article>`;
+      }catch{}
+    }
+
+    async function load(){
+      grid.innerHTML=skeletonCards(6); pag.innerHTML='';
+      try{
+        const res=await api.politics({page:currentPage,per_page:12});
+        const items=res.data??[];
+        grid.innerHTML=items.length?items.map(cardHtml).join(''):emptyState('No political news published yet.');
+        pag.innerHTML=paginationHtml(res.meta,p=>{currentPage=p;load();window.scrollTo({top:0,behavior:'smooth'})});
+      }catch(err){grid.innerHTML=errorState(err.message);}
+    }
+    await loadFeatured();
+    load();
+  </script>
+</body>
+</html>

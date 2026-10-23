@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Habari Hub – Kenya's independent source for breaking news, political analysis, trending stories, and documentary journalism.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Habari Hub – Kenyan News, Politics & Documentary">
+  <meta property="og:description" content="Kenya's independent source for breaking news, political analysis, and documentary journalism.">
+  <meta property="og:image"       content="./assets/images/placeholder.svg">
+  <meta name="twitter:card"       content="summary_large_image">
+
+  <title>Habari Hub – Kenyan News, Politics & Documentary</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./assets/css/design-system.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/home.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./assets/images/favicon.svg">
+</head>
+<body>
+
+  <!-- ── Site header ── -->
+  <header id="site-header" role="banner"></header>
+
+  <!-- ── Breaking news ticker ── -->
+  <div id="ticker" class="ticker-bar" role="complementary" aria-label="Breaking news"></div>
+
+  <!-- ── Main content ── -->
+  <main id="main-content">
+
+    <!-- Hero: Featured Story -->
+    <section class="section-sm" id="hero-section">
+      <div class="container">
+        <div id="hero-container"></div>
+      </div>
+    </section>
+
+    <!-- Latest + Sidebar -->
+    <section class="section" id="latest-section">
+      <div class="container">
+        <div class="grid-2-1">
+          <!-- Latest News -->
+          <div>
+            <div class="section-header">
+              <h2 class="section-title">Latest News</h2>
+              <a href="./pages/latest.html" class="section-link">View all →</a>
+            </div>
+            <div id="latest-grid" class="grid-3"></div>
+          </div>
+
+          <!-- Sidebar -->
+          <aside>
+            <div class="sidebar-widget">
+              <div class="section-header" style="margin-bottom:var(--space-md)">
+                <h3 class="section-title" style="font-size:1.1rem">Trending Now</h3>
+                <a href="./pages/trending.html" class="section-link">All →</a>
+              </div>
+              <div id="trending-sidebar"></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trending full section -->
+    <section class="section" id="trending-section" style="background:var(--bg-secondary);padding:var(--space-2xl) 0">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Trending Now</h2>
+          <a href="./pages/trending.html" class="section-link">View all →</a>
+        </div>
+        <div id="trending-grid" class="grid-4"></div>
+      </div>
+    </section>
+
+    <!-- Documentary showcase -->
+    <section class="section" id="doc-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Documentary</h2>
+          <a href="./pages/documentary.html" class="section-link">View all →</a>
+        </div>
+        <div id="doc-grid" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- Political News -->
+    <section class="section" id="politics-section" style="background:var(--bg-secondary);padding:var(--space-2xl) 0">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Political News</h2>
+          <a href="./pages/politics.html" class="section-link">View all →</a>
+        </div>
+        <div id="politics-grid" class="grid-3"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer id="site-footer" role="contentinfo"></footer>
+
+  <!-- ── Toast container ── -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="./assets/js/config.js"></script>
+
+  <!-- ── Scripts (ES modules) ── -->
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js';
+    import { api, getAppBase } from './assets/js/modules/api.js';
+    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc } from './assets/js/modules/utils.js';
+
+    const base = getAppBase();
+
+    // ── Bootstrap ──────────────────────────────────────────────
+    await renderHeader('Home');
+    await renderFooter();
+    renderTicker();
+
+    // ── Hero (featured) ───────────────────────────────────────
+    async function loadHero() {
+      const el = document.getElementById('hero-container');
+      el.innerHTML = `<div style="min-height:480px;background:var(--bg-card);border-radius:var(--radius-lg)" class="skeleton skeleton-img"></div>`;
+      try {
+        const res     = await api.featured();
+        const stories = res.data ?? [];
+        if (!stories.length) { el.innerHTML = emptyState('No featured stories at the moment.'); return; }
+        const s = stories[0];
+        const img = imgSrc(s.featured_image);
+        el.innerHTML = `
+          <article class="hero-card netflix-billboard">
+            <div class="hero-card-img">
+              <img src="${img}" alt="${esc(s.title)}" loading="eager"
+                   onerror="this.src='${base}/assets/images/placeholder.svg'">
+            </div>
+            <div class="hero-card-body">
+              <div class="netflix-billboard-tags">
+                <span class="badge" style="background:var(--red);letter-spacing:0.1em;font-size:0.68rem">HABARI SPOTLIGHT</span>
+                <a href="${base}/pages/latest.html?category=${esc(s.category_slug)}" class="badge" style="background:${esc(s.category_color||'#2A2A2A')}">${esc(s.category_name)}</a>
+              </div>
+              <h1 class="hero-card-title">
+                <a href="${base}/article.html?slug=${esc(s.slug)}" style="color:inherit">${esc(s.title)}</a>
+              </h1>
+              <p class="hero-card-excerpt">${esc(s.excerpt || '')}</p>
+              <div class="netflix-billboard-actions">
+                <a href="${base}/article.html?slug=${esc(s.slug)}" class="btn-netflix-play">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+                  Read Story
+                </a>
+                <a href="${base}/article.html?slug=${esc(s.slug)}" class="btn-netflix-info">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                  Details
+                </a>
+                <time style="color:var(--text-muted);font-size:.82rem">${timeAgo(s.published_at)}</time>
+              </div>
+            </div>
+          </article>
+        `;
+
+        if (stories.length > 1) {
+          const mini = document.createElement('div');
+          mini.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem';
+          mini.innerHTML = stories.slice(1, 4).map(s2 => cardHHtml(s2)).join('');
+          el.appendChild(mini);
+        }
+      } catch (err) {
+        el.innerHTML = errorState(err.message);
+      }
+    }
+
+    // ── Latest news ────────────────────────────────────────────
+    async function loadLatest() {
+      const grid = document.getElementById('latest-grid');
+      grid.innerHTML = skeletonCards(6);
+      try {
+        const res   = await api.latest({ per_page: 6 });
+        const items = res.data ?? [];
+        grid.innerHTML = items.length ? items.map(cardHtml).join('') : emptyState();
+      } catch (err) { grid.innerHTML = errorState(err.message); }
+    }
+
+    // ── Trending sidebar ───────────────────────────────────────
+    async function loadTrendingSidebar() {
+      const el = document.getElementById('trending-sidebar');
+      el.innerHTML = '<div style="display:flex;flex-direction:column;gap:.5rem">' + Array(5).fill(`<div class="skeleton skeleton-line" style="height:60px;border-radius:6px"></div>`).join('') + '</div>';
+      try {
+        const res   = await api.trending();
+        const items = (res.data ?? []).slice(0, 6);
+        el.innerHTML = items.length
+          ? `<div style="display:flex;flex-direction:column;gap:.5rem">${items.map(cardHHtml).join('')}</div>`
+          : emptyState('No trending stories.');
+      } catch (err) { el.innerHTML = errorState(err.message); }
+    }
+
+    // ── Trending grid ──────────────────────────────────────────
+    async function loadTrendingGrid() {
+      const grid = document.getElementById('trending-grid');
+      grid.innerHTML = skeletonCards(4);
+      try {
+        const res   = await api.trending();
+        const items = (res.data ?? []).slice(0, 4);
+        grid.innerHTML = items.length ? items.map(cardHtml).join('') : emptyState('No trending stories yet.');
+      } catch (err) { grid.innerHTML = errorState(err.message); }
+    }
+
+    // ── Documentaries ──────────────────────────────────────────
+    async function loadDocumentaries() {
+      const grid = document.getElementById('doc-grid');
+      grid.innerHTML = skeletonCards(3);
+      try {
+        const res   = await api.documentaries({ per_page: 3 });
+        const items = res.data ?? [];
+        if (!items.length) { grid.innerHTML = emptyState('No documentaries published yet.'); return; }
+        grid.innerHTML = items.map(item => {
+          const img  = imgSrc(item.featured_image);
+          const slug = esc(item.slug);
+          const hasVideo = item.video_embed_id;
+          return `<article class="card">
+            <a href="${base}/article.html?slug=${slug}" class="card-img">
+              <img src="${img}" alt="${esc(item.title)}" loading="lazy"
+                   onerror="this.src='${base}/assets/images/placeholder.svg'">
+              <span class="badge" style="background:#7B1FA2">Documentary</span>
+              ${hasVideo ? `<div style="position:absolute;bottom:8px;right:8px;width:36px;height:36px;background:rgba(0,0,0,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem">▶</div>` : ''}
+            </a>
+            <div class="card-body">
+              <div class="card-meta">
+                <time>${timeAgo(item.published_at)}</time>
+                ${item.author_name ? `<span>· ${esc(item.author_name)}</span>` : ''}
+              </div>
+              <h3 class="card-title"><a href="${base}/article.html?slug=${slug}">${esc(item.title)}</a></h3>
+              <p class="card-excerpt">${esc(item.excerpt || '')}</p>
+            </div>
+          </article>`;
+        }).join('');
+      } catch (err) { grid.innerHTML = errorState(err.message); }
+    }
+
+    // ── Political news ──────────────────────────────────────────
+    async function loadPolitics() {
+      const grid = document.getElementById('politics-grid');
+      grid.innerHTML = skeletonCards(3);
+      try {
+        const res   = await api.politics({ per_page: 3 });
+        const items = res.data ?? [];
+        grid.innerHTML = items.length ? items.map(cardHtml).join('') : emptyState('No political news at the moment.');
+      } catch (err) { grid.innerHTML = errorState(err.message); }
+    }
+
+    // ── Load all sections ──────────────────────────────────────
+    await Promise.allSettled([
+      loadHero(),
+      loadLatest(),
+      loadTrendingSidebar(),
+      loadTrendingGrid(),
+      loadDocumentaries(),
+      loadPolitics(),
+    ]);
+  </script>
+</body>
+</html>

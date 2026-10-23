@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Kenyan documentary films and long-form investigative journalism from Habari Hub.">
+  <title>Documentary | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}
+    .doc-card .card-img::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.8);opacity:0;transition:opacity var(--trans);background:rgba(0,0,0,.3)}
+    .doc-card:hover .card-img::after{opacity:1}
+    .doc-badge{position:absolute;top:.5rem;right:.5rem;background:rgba(123,31,162,.9);color:#fff;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:var(--radius-sm);letter-spacing:.06em}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+  <div class="page-hero">
+    <div class="container">
+      <h1>Documentary</h1>
+      <p style="color:var(--text-muted)">Long-form investigative journalism, documentary films, and in-depth Kenyan stories.</p>
+      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem">All video content is hosted on authorized external platforms. Habari Hub does not host or rebroadcast unlicensed video.</p>
+    </div>
+  </div>
+  <main style="padding:var(--space-2xl) 0">
+    <div class="container">
+      <div id="doc-grid" class="grid-3"></div>
+      <div id="pagination-container"></div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
+    import { api } from '../assets/js/modules/api.js';
+    import { getAppBase, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc } from '../assets/js/modules/utils.js';
+    await renderHeader('Documentary'); await renderFooter(); renderTicker();
+
+    let currentPage=1;
+    const base=getAppBase();
+    const grid=document.getElementById('doc-grid');
+    const pag=document.getElementById('pagination-container');
+
+    async function load(){
+      grid.innerHTML=skeletonCards(6); pag.innerHTML='';
+      try{
+        const res=await api.documentaries({page:currentPage,per_page:9});
+        const items=res.data??[];
+        if(!items.length){grid.innerHTML=emptyState('No documentaries published yet.');return;}
+        grid.innerHTML=items.map(item=>{
+          const img=imgSrc(item.featured_image);
+          const slug=esc(item.slug);
+          const hasVid=!!item.video_embed_id;
+          return `<article class="card doc-card">
+            <a href="${base}/article.html?slug=${slug}" class="card-img">
+              <img src="${img}" alt="${esc(item.title)}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'">
+              <span class="badge" style="background:#7B1FA2">Documentary</span>
+              ${hasVid?`<span class="doc-badge">VIDEO</span>`:''}
+            </a>
+            <div class="card-body">
+              <div class="card-meta"><time>${timeAgo(item.published_at)}</time>${item.author_name?`<span>· ${esc(item.author_name)}</span>`:''}</div>
+              <h3 class="card-title"><a href="${base}/article.html?slug=${slug}">${esc(item.title)}</a></h3>
+              <p class="card-excerpt">${esc(item.excerpt||'')}</p>
+            </div>
+          </article>`;
+        }).join('');
+        pag.innerHTML=paginationHtml(res.meta,p=>{currentPage=p;load();window.scrollTo({top:0,behavior:'smooth'})});
+      }catch(err){grid.innerHTML=errorState(err.message);}
+    }
+    load();
+  </script>
+</body>
+</html>

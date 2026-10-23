@@ -1,0 +1,67 @@
+/* assets/css/home.css – Homepage-specific styles */
+
+/* ── Hero enhancements ─────────────────────────────────────── */
+.hero-card {
+  cursor: default;
+}
+
+.hero-card:hover .hero-card-title a {
+  color: var(--red-hover);
+}
+
+/* ── Sidebar widget ────────────────────────────────────────── */
+.sidebar-widget {
+  background:    var(--bg-card);
+  border:        1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding:       var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+/* ── Documentary play overlay ──────────────────────────────── */
+.doc-play-icon {
+  position:        absolute;
+  inset:           0;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  background:      rgba(0,0,0,0);
+  transition:      background var(--trans);
+}
+
+.card:hover .doc-play-icon {
+  background: rgba(0,0,0,0.3);
+}
+
+.doc-play-btn {
+  width:           54px;
+  height:          54px;
+  background:      rgba(198,40,40,0.9);
+  border-radius:   50%;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  color:           #fff;
+  font-size:       1.2rem;
+  opacity:         0;
+  transform:       scale(0.8);
+  transition:      opacity var(--trans), transform var(--trans);
+}
+
+.card:hover .doc-play-btn {
+  opacity:   1;
+  transform: scale(1);
+}
+
+/* ── Landscape-specific homepage tweaks ───────────────────── */
+@media (orientation: landscape) and (max-height: 540px) {
+  .doc-play-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+  .sidebar-widget {
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+}

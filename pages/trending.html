@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Trending stories in Kenya right now – the most talked-about news on Habari Hub.">
+  <title>Trending Now | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}
+    .trending-rank{display:flex;align-items:center;gap:.5rem;font-size:1.75rem;font-weight:900;font-family:var(--font-heading);color:var(--red);opacity:.5;line-height:1;margin-bottom:.25rem}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+  <div class="page-hero">
+    <div class="container">
+      <h1>Trending Now</h1>
+      <p style="color:var(--text-muted)">Stories gaining national attention, selected by our editors.</p>
+    </div>
+  </div>
+  <main style="padding:var(--space-2xl) 0">
+    <div class="container">
+      <div id="trending-grid" class="grid-3"></div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
+    import { api } from '../assets/js/modules/api.js';
+    import { cardHtml, skeletonCards, emptyState, errorState } from '../assets/js/modules/utils.js';
+    await renderHeader('Trending'); await renderFooter(); renderTicker();
+    const grid=document.getElementById('trending-grid');
+    grid.innerHTML=skeletonCards(9);
+    try{
+      const res=await api.trending();
+      const items=res.data??[];
+      grid.innerHTML=items.length?items.map(cardHtml).join(''):emptyState('No trending stories at the moment.');
+    }catch(err){grid.innerHTML=errorState(err.message);}
+  </script>
+</body>
+</html>

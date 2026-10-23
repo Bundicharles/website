@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Replace "habarihub.co.ke" below with your production domain.
+  This sitemap covers static pages; article URLs are dynamic (article.html?slug=...).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://habarihub.co.ke/</loc><changefreq>hourly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/latest.html</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/trending.html</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/politics.html</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/documentary.html</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/about.html</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://habarihub.co.ke/pages/contact.html</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+</urlset>

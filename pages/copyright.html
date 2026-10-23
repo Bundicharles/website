@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Copyright | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>.page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}.content-page{width:100%;max-width:100%;margin:0;padding:var(--space-2xl) 0}.content-page h2{margin:var(--space-xl) 0 var(--space-md)}.content-page p{margin-bottom:var(--space-md);line-height:1.8;color:var(--text-secondary)}</style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div class="page-hero"><div class="container"><h1>Copyright Notice</h1></div></div>
+  <main>
+    <div class="container">
+      <div class="content-page">
+        <p>© 2024 Habari Hub. All rights reserved.</p>
+        <h2>Original Content</h2>
+        <p>All articles, analyses, opinion pieces, and documentary content produced by Habari Hub staff or commissioned contributors are protected by copyright. Unauthorised reproduction is prohibited.</p>
+        <h2>Permitted Use</h2>
+        <p>You may share links to Habari Hub content freely. Short excerpts (up to 50 words) may be quoted with clear attribution and a link to the original article.</p>
+        <h2>External Content</h2>
+        <p>Where Habari Hub publishes headlines, short excerpts, or links to external publishers, copyright in those excerpts remains with the original publisher. Habari Hub publishes such content under fair use principles, with attribution and source links.</p>
+        <h2>DMCA / Takedown Requests</h2>
+        <p>If you believe your copyright has been infringed, please contact <a href="mailto:info@habarihub.co.ke" style="color:var(--red)">info@habarihub.co.ke</a> with details of the content concerned and evidence of your copyright ownership.</p>
+      </div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter } from '../assets/js/modules/components.js';
+    await renderHeader(); await renderFooter();
+  </script>
+</body>
+</html>

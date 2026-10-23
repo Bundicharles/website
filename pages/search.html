@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>Search | Habari Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .search-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}
+    .search-form{display:flex;gap:.5rem;max-width:640px}
+    .search-form input{flex:1;padding:.65rem 1rem;background:var(--bg-card);border:2px solid var(--border);color:var(--text-primary);border-radius:var(--radius);font-size:1rem}
+    .search-form input:focus{outline:none;border-color:var(--red)}
+    .search-form button{padding:.65rem 1.5rem;background:var(--red);color:#fff;border-radius:var(--radius);font-weight:600;border:none;cursor:pointer}
+    .result-count{color:var(--text-muted);font-size:.875rem;margin-bottom:var(--space-xl)}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+  <div class="search-hero">
+    <div class="container">
+      <h1 style="margin-bottom:1rem">Search</h1>
+      <form class="search-form" id="search-form">
+        <input type="search" id="q" name="q" placeholder="Search articles, topics, documentaries…" autocomplete="off" aria-label="Search">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+  <main style="padding:var(--space-2xl) 0">
+    <div class="container">
+      <div id="result-count" class="result-count"></div>
+      <div id="results-grid" class="grid-3"></div>
+      <div id="pagination-container"></div>
+    </div>
+  </main>
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <script src="../assets/js/config.js"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
+    import { api } from '../assets/js/modules/api.js';
+    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc } from '../assets/js/modules/utils.js';
+    await renderHeader(); await renderFooter(); renderTicker();
+
+    const params=new URLSearchParams(window.location.search);
+    let q=params.get('q')||'';
+    let currentPage=1;
+    const input=document.getElementById('q');
+    const grid=document.getElementById('results-grid');
+    const pag=document.getElementById('pagination-container');
+    const countEl=document.getElementById('result-count');
+    input.value=q;
+
+    document.getElementById('search-form').addEventListener('submit',e=>{
+      e.preventDefault();
+      q=input.value.trim();
+      currentPage=1;
+      history.replaceState(null,'',`${window.location.pathname}?q=${encodeURIComponent(q)}`);
+      search();
+    });
+
+    async function search(){
+      if(q.length<2){grid.innerHTML=emptyState('Enter at least 2 characters to search.');countEl.textContent='';return;}
+      document.title=`Search: ${q} | Habari Hub`;
+      grid.innerHTML=skeletonCards(6); pag.innerHTML=''; countEl.textContent='';
+      try{
+        const res=await api.search({q,page:currentPage,per_page:12});
+        const items=res.data??[];
+        const total=res.meta?.total??0;
+        countEl.textContent=`${total} result${total===1?'':'s'} for "${q}"`;
+        grid.innerHTML=items.length?items.map(cardHtml).join(''):emptyState(`No results found for "${q}".`);
+        pag.innerHTML=paginationHtml(res.meta,p=>{currentPage=p;search();window.scrollTo({top:0,behavior:'smooth'})});
+      }catch(err){grid.innerHTML=errorState(err.message);}
+    }
+    if(q) search();
+  </script>
+</body>
+</html>

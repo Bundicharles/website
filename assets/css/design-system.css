@@ -1,0 +1,1092 @@
+/* ============================================================
+   Habari Hub – Design System & Global Styles
+   ============================================================ */
+
+/* ── CSS Custom Properties ─────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-base:       #090909;
+  --bg-secondary:  #121212;
+  --bg-card:       #181818;
+  --bg-card-hover: #1e1e1e;
+  --bg-overlay:    rgba(9,9,9,0.85);
+
+  /* Brand colors */
+  --red:           #C62828;
+  --red-hover:     #EF4444;
+  --red-dark:      #8B1A1A;
+  --red-subtle:    rgba(198,40,40,0.12);
+
+  /* Text */
+  --text-primary:   #F5F5F5;
+  --text-secondary: #B3B3B3;
+  --text-muted:     #6B6B6B;
+  --text-inverse:   #090909;
+
+  /* Borders */
+  --border:       #2A2A2A;
+  --border-light: #1E1E1E;
+
+  /* Typography */
+  --font-heading: 'Playfair Display', 'Georgia', serif;
+  --font-body:    'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono:    'Fira Code', 'Consolas', monospace;
+
+  /* Spacing */
+  --space-xs:  0.25rem;
+  --space-sm:  0.5rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+
+  /* Radius */
+  --radius-sm: 3px;
+  --radius:    6px;
+  --radius-lg: 10px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
+  --shadow:     0 4px 12px rgba(0,0,0,0.6);
+  --shadow-lg:  0 8px 30px rgba(0,0,0,0.8);
+  --shadow-red: 0 0 20px rgba(198,40,40,0.25);
+
+  /* Transitions */
+  --trans-fast:   150ms ease;
+  --trans:        250ms ease;
+  --trans-slow:   400ms ease;
+
+  /* Layout */
+  --max-width:    100%;
+  --header-h:     68px;
+  --edge-pad:     clamp(0.85rem, 2.2vw, 2.5rem);
+}
+
+/* ── Reset & Base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  background-color: var(--bg-base);
+  color:            var(--text-primary);
+  font-family:      var(--font-body);
+  font-size:        16px;
+  line-height:      1.6;
+  min-height:       100vh;
+  overflow-x:       hidden;
+  width:            100%;
+  max-width:        100%;
+  position:         relative;
+}
+
+main, section, header, footer {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; height: auto; display: block; }
+button { cursor: pointer; border: none; background: none; font: inherit; }
+ul, ol { list-style: none; }
+input, textarea, select { font: inherit; max-width: 100%; box-sizing: border-box; }
+:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* ── Typography ────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family:    var(--font-heading);
+  font-weight:    700;
+  line-height:    1.25;
+  color:          var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: clamp(1.75rem, 4vw, 3rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 2.25rem); }
+h3 { font-size: clamp(1.15rem, 2vw, 1.5rem); }
+h4 { font-size: 1.15rem; }
+h5 { font-size: 1rem; }
+
+p { line-height: 1.75; color: var(--text-secondary); }
+
+/* ── Layout utilities (Edge-to-Edge) ───────────────────────── */
+.container {
+  width:         100%;
+  max-width:     100%;
+  margin:        0;
+  padding-left:  max(var(--edge-pad), env(safe-area-inset-left));
+  padding-right: max(var(--edge-pad), env(safe-area-inset-right));
+  box-sizing:    border-box;
+}
+
+.section { padding: var(--space-2xl) 0; width: 100%; max-width: 100%; overflow-x: clip; }
+.section-sm { padding: var(--space-xl) 0; width: 100%; max-width: 100%; overflow-x: clip; }
+
+/* ── Content page wrapper (Edge-to-Edge) ───────────────────── */
+.content-page {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-2xl) 0;
+  box-sizing: border-box;
+  color: var(--text-secondary);
+}
+.content-page h2 { margin: var(--space-xl) 0 var(--space-md); color: var(--text-primary); font-size: 1.35rem; }
+.content-page p, .content-page ul { margin-bottom: var(--space-md); line-height: 1.8; color: var(--text-secondary); }
+.content-page ul { padding-left: var(--space-xl); list-style: disc; }
+.content-page li { margin-bottom: 0.5rem; }
+
+/* ── Edge-to-Edge Fluid Multi-Column Grids ─────────────────── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-2-1 {
+  display: grid;
+  grid-template-columns: 1fr clamp(320px, 25vw, 420px);
+  gap: var(--space-xl);
+}
+
+@media (max-width: 1024px) {
+  .grid-2-1 { grid-template-columns: 1fr; }
+}
+
+/* ── Section headings ──────────────────────────────────────── */
+.section-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   var(--space-xl);
+  padding-bottom:  var(--space-md);
+  border-bottom:   2px solid var(--border);
+  gap:             var(--space-md);
+}
+
+.section-title {
+  font-family:  var(--font-heading);
+  font-size:    1.5rem;
+  font-weight:  700;
+  display:      flex;
+  align-items:  center;
+  gap:          var(--space-sm);
+}
+
+.section-title::before {
+  content:      '';
+  display:      inline-block;
+  width:        4px;
+  height:       1.4em;
+  background:   var(--red);
+  border-radius: 2px;
+  flex-shrink:  0;
+}
+
+.section-link {
+  font-size:   0.875rem;
+  font-weight: 600;
+  color:       var(--red);
+  transition:  color var(--trans-fast);
+  white-space: nowrap;
+}
+
+.section-link:hover { color: var(--red-hover); }
+
+/* ── Category badge ────────────────────────────────────────── */
+.badge {
+  display:         inline-flex;
+  align-items:     center;
+  padding:         2px 8px;
+  font-size:       0.7rem;
+  font-weight:     700;
+  letter-spacing:  0.06em;
+  text-transform:  uppercase;
+  border-radius:   var(--radius-sm);
+  background:      var(--red);
+  color:           #fff;
+}
+
+/* ── Article card ──────────────────────────────────────────── */
+.card {
+  background:    var(--bg-card);
+  border:        1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow:      hidden;
+  transition:    transform var(--trans), box-shadow var(--trans), border-color var(--trans);
+  display:       flex;
+  flex-direction:column;
+}
+
+.card:hover {
+  transform:    translateY(-3px);
+  box-shadow:   var(--shadow-lg);
+  border-color: var(--border);
+}
+
+.card-img {
+  position:   relative;
+  overflow:   hidden;
+  aspect-ratio: 16/9;
+  background: var(--bg-secondary);
+}
+
+.card-img img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  transition: transform var(--trans-slow);
+}
+
+.card:hover .card-img img { transform: scale(1.04); }
+
+.card-img .badge {
+  position: absolute;
+  top:      var(--space-sm);
+  left:     var(--space-sm);
+  z-index:  1;
+}
+
+.card-body {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-meta {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-sm);
+  margin-bottom: var(--space-sm);
+  font-size:   0.78rem;
+  color:       var(--text-muted);
+}
+
+.card-title {
+  font-family:   var(--font-heading);
+  font-size:     1.05rem;
+  font-weight:   700;
+  line-height:   1.35;
+  margin-bottom: var(--space-sm);
+  color:         var(--text-primary);
+  transition:    color var(--trans-fast);
+}
+
+.card:hover .card-title { color: var(--red-hover); }
+
+.card-excerpt {
+  font-size:   0.875rem;
+  color:       var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+  display:     -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow:    hidden;
+}
+
+/* ── Featured hero card ────────────────────────────────────── */
+.hero-card {
+  position:      relative;
+  border-radius: var(--radius-lg);
+  overflow:      hidden;
+  min-height:    520px;
+  display:       flex;
+  align-items:   flex-end;
+  background:    var(--bg-card);
+}
+
+.hero-card-img {
+  position: absolute;
+  inset:    0;
+}
+
+.hero-card-img img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+}
+
+.hero-card-img::after {
+  content:    '';
+  position:   absolute;
+  inset:      0;
+  background: linear-gradient(to top, rgba(9,9,9,0.98) 0%, rgba(9,9,9,0.55) 50%, transparent 100%);
+}
+
+.hero-card-body {
+  position:   relative;
+  z-index:    1;
+  padding:    var(--space-xl);
+  width:      100%;
+}
+
+.hero-card-title {
+  font-size:     clamp(1.5rem, 3.5vw, 2.25rem);
+  margin-bottom: var(--space-md);
+  text-shadow:   0 2px 12px rgba(0,0,0,0.8);
+}
+
+.hero-card-excerpt {
+  color:      var(--text-secondary);
+  max-width:  640px;
+  margin-bottom: var(--space-md);
+}
+
+/* ── Horizontal card (list view) ───────────────────────────── */
+.card-h {
+  display:   flex;
+  gap:       var(--space-md);
+  padding:   var(--space-md);
+  background: var(--bg-card);
+  border:    1px solid var(--border-light);
+  border-radius: var(--radius);
+  transition: background var(--trans-fast);
+}
+
+.card-h:hover { background: var(--bg-card-hover); }
+
+.card-h-img {
+  width:         120px;
+  height:        90px;
+  flex-shrink:   0;
+  border-radius: var(--radius-sm);
+  overflow:      hidden;
+  background:    var(--bg-secondary);
+}
+
+.card-h-img img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-h-body { flex: 1; min-width: 0; }
+
+.card-h-title {
+  font-family:   var(--font-heading);
+  font-size:     0.95rem;
+  font-weight:   700;
+  line-height:   1.35;
+  margin-bottom: var(--space-xs);
+  color:         var(--text-primary);
+  display:       -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow:      hidden;
+  transition:    color var(--trans-fast);
+}
+
+.card-h:hover .card-h-title { color: var(--red-hover); }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             var(--space-sm);
+  padding:         0.5rem 1.25rem;
+  font-weight:     600;
+  font-size:       0.875rem;
+  border-radius:   var(--radius);
+  transition:      background var(--trans-fast), color var(--trans-fast), transform var(--trans-fast);
+}
+
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--red);
+  color:      #fff;
+}
+.btn-primary:hover { background: var(--red-hover); }
+
+.btn-outline {
+  background:   transparent;
+  color:        var(--text-primary);
+  border:       1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--red); color: var(--red); }
+
+.btn-ghost {
+  background: transparent;
+  color:      var(--text-secondary);
+}
+.btn-ghost:hover { color: var(--text-primary); background: var(--bg-card); }
+
+/* ── Netflix Editorial UI Components ────────────────────────── */
+.netflix-top-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+  z-index: 2;
+  text-transform: uppercase;
+}
+
+.netflix-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 44px;
+  height: 44px;
+  background: rgba(198, 40, 40, 0.92);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.7);
+  z-index: 2;
+  opacity: 0.9;
+  transition: transform var(--trans-fast), opacity var(--trans-fast), background var(--trans-fast);
+}
+
+.card:hover .netflix-play-btn,
+.card:active .netflix-play-btn {
+  transform: translate(-50%, -50%) scale(1.1);
+  opacity: 1;
+  background: var(--red-hover);
+}
+
+.card-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14,14,14,0.92) 0%, rgba(14,14,14,0.2) 45%, transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.netflix-billboard-tags {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.netflix-billboard-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-md);
+}
+
+.btn-netflix-play {
+  background: #ffffff;
+  color: #090909;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background var(--trans-fast), transform var(--trans-fast);
+  cursor: pointer;
+}
+.btn-netflix-play:hover,
+.btn-netflix-play:active {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.02);
+}
+
+.btn-netflix-info {
+  background: rgba(109, 109, 110, 0.55);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.65rem 1.3rem;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background var(--trans-fast), transform var(--trans-fast);
+  cursor: pointer;
+}
+.btn-netflix-info:hover,
+.btn-netflix-info:active {
+  background: rgba(109, 109, 110, 0.78);
+  transform: scale(1.02);
+}
+
+/* ── Breaking news ticker ──────────────────────────────────── */
+.ticker-bar {
+  background: var(--red);
+  padding:    0.4rem 0;
+  overflow:   hidden;
+}
+
+.ticker-inner {
+  display:   flex;
+  align-items: center;
+  gap:       0;
+}
+
+.ticker-label {
+  background:   rgba(0,0,0,0.3);
+  color:        #fff;
+  font-size:    0.75rem;
+  font-weight:  800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding:      0.2rem 0.75rem;
+  white-space:  nowrap;
+  flex-shrink:  0;
+  margin-right: var(--space-md);
+}
+
+.ticker-track {
+  overflow:    hidden;
+  flex:        1;
+}
+
+.ticker-items {
+  display:   inline-flex;
+  gap:       2rem;
+  animation: tickerScroll 40s linear infinite;
+  white-space: nowrap;
+}
+
+.ticker-items:hover { animation-play-state: paused; }
+
+.ticker-item {
+  font-size:  0.8rem;
+  font-weight: 600;
+  color:      #fff;
+  display:    inline-flex;
+  align-items: center;
+  gap:        0.4rem;
+}
+
+.ticker-item::before {
+  content:      '●';
+  font-size:    0.5rem;
+  opacity:      0.7;
+}
+
+@keyframes tickerScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── Loading skeleton ──────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
+  background-size: 200% 100%;
+  animation:  shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes shimmer {
+  from { background-position:  200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+.skeleton-card {
+  background:    var(--bg-card);
+  border:        1px solid var(--border-light);
+  border-radius: var(--radius);
+  overflow:      hidden;
+}
+
+.skeleton-img  { aspect-ratio: 16/9; }
+.skeleton-line { height: 14px; margin: 8px var(--space-md); }
+.skeleton-line.sm { width: 50%; }
+.skeleton-line.lg { height: 20px; }
+
+/* ── Empty & Error states ──────────────────────────────────── */
+.state-empty, .state-error {
+  text-align:     center;
+  padding:        var(--space-3xl);
+  color:          var(--text-muted);
+}
+
+.state-empty svg, .state-error svg { opacity: 0.3; margin: 0 auto var(--space-md); }
+.state-error { color: var(--red-hover); }
+
+/* ── Pagination ────────────────────────────────────────────── */
+.pagination {
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--space-sm);
+  margin-top:      var(--space-2xl);
+  flex-wrap:       wrap;
+}
+
+.pagination-btn {
+  min-width:     36px;
+  height:        36px;
+  padding:       0 var(--space-sm);
+  display:       inline-flex;
+  align-items:   center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size:     0.875rem;
+  font-weight:   600;
+  border:        1px solid var(--border);
+  background:    var(--bg-card);
+  color:         var(--text-secondary);
+  transition:    background var(--trans-fast), color var(--trans-fast);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--red);
+  color:      #fff;
+  border-color: var(--red);
+}
+
+.pagination-btn.active {
+  background: var(--red);
+  color:      #fff;
+  border-color: var(--red);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor:  not-allowed;
+}
+
+/* ── Video embed ────────────────────────────────────────────── */
+.video-wrap {
+  position:      relative;
+  aspect-ratio:  16/9;
+  border-radius: var(--radius);
+  overflow:      hidden;
+  background:    #000;
+}
+
+.video-wrap iframe {
+  position: absolute;
+  inset:    0;
+  width:    100%;
+  height:   100%;
+  border:   none;
+}
+
+/* ── Tag / pill ─────────────────────────────────────────────── */
+.tag {
+  display:       inline-flex;
+  align-items:   center;
+  padding:       3px 10px;
+  border:        1px solid var(--border);
+  border-radius: 99px;
+  font-size:     0.78rem;
+  color:         var(--text-secondary);
+  transition:    border-color var(--trans-fast), color var(--trans-fast);
+}
+
+.tag:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Divider ────────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-xl) 0;
+}
+
+/* ── Notification toast ─────────────────────────────────────── */
+#toast-container {
+  position:   fixed;
+  bottom:     var(--space-lg);
+  right:      var(--space-lg);
+  z-index:    9999;
+  display:    flex;
+  flex-direction: column;
+  gap:        var(--space-sm);
+}
+
+.toast {
+  padding:       0.75rem 1rem;
+  background:    var(--bg-card);
+  border:        1px solid var(--border);
+  border-radius: var(--radius);
+  font-size:     0.875rem;
+  max-width:     320px;
+  box-shadow:    var(--shadow-lg);
+  animation:     toastIn 0.3s ease;
+}
+
+.toast.success { border-color: #10b981; color: #6ee7b7; }
+.toast.error   { border-color: var(--red); color: #fca5a5; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Netflix Mobile Carousel Rails & Landscape Cards ───────────── */
+@media (max-width: 768px) {
+  :root {
+    --header-h: 56px;
+    --edge-pad: clamp(0.75rem, 3vw, 1.25rem);
+    --space-2xl: 1.5rem;
+    --space-xl: 1rem;
+    --space-lg: 0.85rem;
+  }
+
+  /* Section header with Netflix look */
+  .section-header {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.35rem;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .section-link {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Netflix Horizontal Carousel Rows (Swipe Left/Right on Homepage & Related) ── */
+  .netflix-rail,
+  #latest-section #latest-grid,
+  #trending-section #trending-grid,
+  #doc-section #doc-grid,
+  #politics-section #politics-grid,
+  .related-section .grid-3 {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    gap: 0.75rem !important;
+    padding-bottom: 0.85rem;
+    padding-top: 0.25rem;
+    margin-left: calc(-1 * var(--edge-pad));
+    margin-right: calc(-1 * var(--edge-pad));
+    padding-left: var(--edge-pad);
+    padding-right: var(--edge-pad);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: calc(100% + (2 * var(--edge-pad))) !important;
+    max-width: calc(100% + (2 * var(--edge-pad))) !important;
+  }
+
+  .netflix-rail::-webkit-scrollbar,
+  #latest-section #latest-grid::-webkit-scrollbar,
+  #trending-section #trending-grid::-webkit-scrollbar,
+  #doc-section #doc-grid::-webkit-scrollbar,
+  #politics-section #politics-grid::-webkit-scrollbar,
+  .related-section .grid-3::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── Full-Width Landscape Cards on Listing Feeds (Latest, Search, Category, etc.) ── */
+  #articles-grid,
+  #results-grid,
+  main .grid-3:not(.netflix-rail):not(#latest-grid):not(#doc-section *):not(#politics-section *):not(#trending-section *):not(.related-section *),
+  main .grid-4:not(.netflix-rail):not(#trending-grid) {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: visible !important;
+  }
+
+  .grid-2-1 {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* ── Netflix-style Landscape Cards on Mobile Phone ── */
+  .card {
+    display: flex !important;
+    flex-direction: column !important;
+    background: #141414 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* Horizontal swipe cards inside rails */
+  .netflix-rail .card,
+  #latest-section #latest-grid .card,
+  #trending-section #trending-grid .card,
+  #doc-section #doc-grid .card,
+  #politics-section #politics-grid .card,
+  .related-section .grid-3 .card,
+  .netflix-rail .skeleton-card,
+  #latest-section #latest-grid .skeleton-card,
+  #trending-section #trending-grid .skeleton-card,
+  #doc-section #doc-grid .skeleton-card,
+  #politics-section #politics-grid .skeleton-card,
+  .related-section .grid-3 .skeleton-card {
+    flex: 0 0 clamp(235px, 68vw, 300px) !important;
+    width: clamp(235px, 68vw, 300px) !important;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+
+  /* Cards in vertical listing feed */
+  #articles-grid .card,
+  #results-grid .card,
+  main .grid-3:not(.netflix-rail):not(#latest-grid):not(#doc-section *):not(#politics-section *):not(#trending-section *):not(.related-section *) .card,
+  main .grid-4:not(.netflix-rail):not(#trending-grid) .card,
+  #articles-grid .skeleton-card,
+  #results-grid .skeleton-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+
+  .card:active {
+    transform: scale(0.97);
+  }
+
+  /* 16:9 Landscape Card Image */
+  .card-img {
+    width: 100% !important;
+    aspect-ratio: 16/9 !important;
+    height: auto !important;
+    position: relative;
+    overflow: hidden;
+    background: #0d0d0d;
+  }
+  .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-img .badge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 2;
+    font-size: 0.62rem;
+    padding: 2px 6px;
+  }
+
+  .card-body {
+    padding: 0.65rem 0.75rem !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #141414;
+    flex: 1;
+  }
+
+  .card-title {
+    font-size: 0.9rem !important;
+    font-weight: 700;
+    line-height: 1.35;
+    color: #f5f5f5;
+    margin-bottom: 0.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-excerpt {
+    font-size: 0.76rem !important;
+    line-height: 1.4;
+    color: #a3a3a3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-meta {
+    font-size: 0.7rem;
+    color: #737373;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* Horizontal card (.card-h) on mobile */
+  .card-h {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    padding: 0.5rem;
+    gap: 0.75rem;
+    border-radius: var(--radius);
+    background: #141414;
+    border: 1px solid #222;
+  }
+
+  .card-h-img {
+    width: clamp(105px, 32vw, 135px) !important;
+    aspect-ratio: 16/9 !important;
+    height: auto !important;
+    flex-shrink: 0;
+  }
+
+  .card-h-title {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+  }
+
+  /* Netflix Billboard Hero on Phone */
+  .hero-card {
+    min-height: min(340px, 62vh);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .hero-card-img::after {
+    background: linear-gradient(to top, rgba(9,9,9,1) 0%, rgba(9,9,9,0.7) 45%, rgba(9,9,9,0.15) 100%);
+  }
+  .hero-card-body {
+    padding: var(--space-md);
+  }
+  .hero-card-title {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+    margin-bottom: 0.35rem;
+  }
+  .hero-card-excerpt {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
+  .btn-netflix-play {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.85rem;
+  }
+  .btn-netflix-info {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Skeleton Cards on Netflix Rail */
+  .skeleton-card {
+    flex: 0 0 clamp(235px, 68vw, 300px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 8px;
+  }
+  .skeleton-card .skeleton-img {
+    aspect-ratio: 16/9 !important;
+    width: 100% !important;
+  }
+}
+
+/* PHONE ROTATED TO LANDSCAPE ORIENTATION (height <= 540px and orientation: landscape) */
+@media (orientation: landscape) and (max-height: 540px) {
+  :root {
+    --header-h: 46px;
+    --space-2xl: 1.25rem;
+    --space-xl: 0.85rem;
+  }
+
+  #site-header { height: var(--header-h); }
+  .logo-mark { width: 26px; height: 26px; font-size: 0.85rem; }
+  .logo-text { font-size: 1.05rem; }
+
+  .ticker-bar { padding: 0.18rem 0; }
+  .ticker-label { font-size: 0.65rem; padding: 0.12rem 0.45rem; }
+  .ticker-item { font-size: 0.72rem; }
+
+  /* 2-column landscape grid for feeds when phone is held sideways */
+  #articles-grid,
+  #results-grid,
+  main .grid-3:not(.netflix-rail):not(#latest-grid):not(#doc-section *):not(#politics-section *):not(#trending-section *):not(.related-section *),
+  main .grid-4:not(.netflix-rail):not(#trending-grid) {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.85rem !important;
+  }
+
+  /* Netflix horizontal rail card width in phone landscape */
+  .netflix-rail .card,
+  #latest-section #latest-grid .card,
+  #trending-section #trending-grid .card,
+  #doc-section #doc-grid .card,
+  #politics-section #politics-grid .card,
+  .related-section .grid-3 .card {
+    flex: 0 0 clamp(220px, 40vw, 290px) !important;
+    width: clamp(220px, 40vw, 290px) !important;
+  }
+
+  .hero-card {
+    min-height: min(280px, 78vh);
+    max-height: 85vh;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr 1fr;
+    padding: var(--space-lg) 0;
+    gap: var(--space-md);
+  }
+
+  .mobile-menu {
+    max-height: calc(100vh - var(--header-h));
+    overflow-y: auto;
+  }
+  .mobile-nav-link {
+    padding: 0.55rem var(--space-md);
+    font-size: 0.875rem;
+  }
+}
+
+/* WIDESCREEN DESKTOP (Edge-to-Edge full bleed) */
+@media (min-width: 1200px) {
+  .hero-card {
+    min-height: 520px;
+  }
+  .hero-card-title {
+    font-size: clamp(2rem, 2.8vw, 3rem);
+  }
+  .card-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .grid-3 {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+  .grid-4 {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}

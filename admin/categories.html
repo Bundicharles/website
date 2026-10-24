@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>Categories | Habari Hub Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./assets/css/admin.css">
+  <link rel="stylesheet" href="/admin/assets/css/admin.css">
 </head>
 <body>
 <div class="admin-layout">
@@ -63,7 +63,7 @@
   <script src="../assets/js/config.js"></script>
 
   <script type="module">
-    import { requireAuth, initSidebar, adminFetch, esc, toast, confirm as adminConfirm } from './assets/js/admin-core.js';
+    import { requireAuth, initSidebar, adminFetch, esc, toast, confirm as adminConfirm } from '/admin/assets/js/admin-core.js';
   const user = await requireAuth(); initSidebar(user);
 
   function resetForm() {

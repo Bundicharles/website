@@ -299,7 +299,7 @@ select.form-control { appearance: none; }
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: none; }
   .topbar { left: 0; }
-  .main-content { margin-left: 0; }
+  .main-content { margin-left: 0; width: 100%; }
   .sidebar-toggle { display: flex; }
   .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 99; }
   .sidebar-overlay.show { display: block; }

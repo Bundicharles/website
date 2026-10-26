@@ -86,6 +86,34 @@ export function youtubeEmbedUrl(embedId) {
   return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(embedId)}?rel=0&modestbranding=1`;
 }
 
+// ── Parse a video URL from ANY source ────────────────────────────
+// Supports YouTube (watch/short/embed), Vimeo, and direct file links
+export function parseVideoUrl(url) {
+  if (!url) return null;
+  const u = url.trim();
+
+  // YouTube: youtube.com/watch?v=ID, youtu.be/ID, youtube.com/embed/ID, youtube.com/shorts/ID
+  let m = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (m) {
+    return { type: 'embed', provider: 'youtube', embedUrl: `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1` };
+  }
+
+  // Vimeo: vimeo.com/ID
+  m = u.match(/vimeo\.com\/(\d+)/);
+  if (m) {
+    return { type: 'embed', provider: 'vimeo', embedUrl: `https://player.vimeo.com/video/${m[1]}` };
+  }
+
+  // Direct video file links (.mp4, .webm, .ogg, .mov, .mkv, .avi, .wmv)
+  const extMatch = u.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)(\?|#|$)/i);
+  if (extMatch) {
+    const mimeMap = { mp4:'video/mp4', webm:'video/webm', ogg:'video/ogg', ogv:'video/ogg', mov:'video/quicktime', mkv:'video/x-matroska' };
+    return { type: 'direct', provider: 'direct', url: u, mimeType: mimeMap[extMatch[1].toLowerCase()] || '' };
+  }
+
+  return null;
+}
+
 // ── HTML escaping (for safe injection into innerHTML) ─────────
 export function esc(str) {
   if (str == null) return '';
@@ -143,6 +171,82 @@ export function setParam(key, value) {
 }
 
 // ── Skeleton builders ─────────────────────────────────────────
+// ── Media helpers: silent video preview ──────────────────────────
+export function getArticleVideo(article) {
+  const sources = [
+    article.featured_video ? imgSrc(article.featured_video) : null,
+    article.video_url ? imgSrc(article.video_url) : null,
+  ].filter(Boolean);
+
+  for (const url of sources) {
+    const parsed = parseVideoUrl(url);
+    if (parsed) {
+      if (parsed.type === 'direct') return parsed.url;
+      if (parsed.type === 'embed') {
+        return parsed.embedUrl + (parsed.embedUrl.includes('?') ? '&' : '?') + 'autoplay=1&mute=1';
+      }
+    }
+  }
+  return null;
+}
+
+export function isVideoContent(article) {
+  return article.content_type === 'documentary' || !!article.featured_video || !!article.video_url;
+}
+
+export function cardMediaHtml(article, { preview = false } = {}) {
+  const base = getAppBase();
+  const thumb = imgSrc(article.featured_image);
+  const title = esc(article.title);
+  const videoUrl = preview ? getArticleVideo(article) : null;
+
+  if (!videoUrl) {
+    return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'">`;
+  }
+
+  const isDirect = videoUrl.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)/i);
+  if (isDirect) {
+    return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'" class="media-img">
+<video src="${esc(videoUrl)}" muted autoplay loop playsinline poster="${thumb}" class="media-video"></video>`;
+  }
+
+  return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'" class="media-img">
+<iframe src="${esc(videoUrl)}" allow="autoplay; encrypted-media" class="media-video" title="${title}" loading="lazy"></iframe>`;
+}
+
+export function heroMediaHtml(article, { overlay = '' } = {}) {
+  const base = getAppBase();
+  const thumb = imgSrc(article.featured_image);
+  const title = esc(article.title);
+  const videoUrl = getArticleVideo(article);
+
+  if (!videoUrl) {
+    return `<div class="hero-card-img">
+      <img src="${thumb}" alt="${title}" loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
+      ${overlay}
+    </div>`;
+  }
+
+  const isDirect = videoUrl.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)/i);
+  if (isDirect) {
+    return `<div class="hero-card-img">
+      <video src="${esc(videoUrl)}" muted autoplay loop playsinline poster="${thumb}" class="media-video-full"
+             onerror="this.style.display='none'; document.querySelector('.media-poster').style.display='block'">
+      </video>
+      <img src="${thumb}" alt="${title}" loading="eager" class="media-poster"
+           onerror="this.src='${base}/assets/images/placeholder.svg'" style="display:none">
+      ${overlay}
+    </div>`;
+  }
+
+  return `<div class="hero-card-img">
+    <iframe src="${esc(videoUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
+            loading="eager" title="${title}" class="media-video-full"></iframe>
+    ${overlay}
+  </div>`;
+}
+
+// ── Skeleton builders ─────────────────────────────────────────
 export function skeletonCard() {
   return `<div class="skeleton-card card">
     <div class="skeleton skeleton-img card-img"></div>
@@ -163,7 +267,6 @@ export function cardHtml(article) {
   const base  = getAppBase();
   const cat   = article.category_slug ? `<a href="${base}/pages/latest.html?category=${esc(article.category_slug)}" class="badge" style="background:${esc(article.category_color||'#C62828')}">${esc(article.category_name)}</a>` : '';
   const isVideo = !!article.featured_video;
-  const thumb   = imgSrc(article.featured_image);
   const slug  = esc(article.slug);
   const title = esc(article.title);
   const exerp = esc(article.excerpt || '');
@@ -174,10 +277,11 @@ export function cardHtml(article) {
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="6 3 20 12 6 21 6 3"/></svg>
     </div>` : '';
   const rankBadge = article.trending_rank ? `<span class="netflix-top-badge">#${article.trending_rank}</span>` : '';
+  const media = cardMediaHtml(article, { preview: true });
 
   return `<article class="card">
     <a href="${base}/article.html?slug=${slug}" class="card-img" aria-label="${title}">
-      <img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'">
+      ${media}
       <div class="card-img-overlay"></div>
       ${cat}
       ${rankBadge}
@@ -196,15 +300,22 @@ export function cardHtml(article) {
 
 export function cardHHtml(article) {
   const base  = getAppBase();
-  const img   = imgSrc(article.featured_image);
   const slug  = esc(article.slug);
   const title = esc(article.title);
   const date  = timeAgo(article.published_at);
   const cat   = article.category_name ? `<span class="badge" style="background:${esc(article.category_color||'#C62828')};margin-bottom:4px">${esc(article.category_name)}</span>` : '';
+  const isVideo = !!article.featured_video;
+  const isDoc = article.content_type === 'documentary' || !!article.video_url;
+  const playBtn = isDoc || isVideo ? `
+    <div class="netflix-play-btn" aria-label="${isVideo ? 'Watch video' : 'Play documentary'}">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+    </div>` : '';
+  const media = cardMediaHtml(article, { preview: true });
 
   return `<article class="card-h">
     <a href="${base}/article.html?slug=${slug}" class="card-h-img">
-      <img src="${img}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'">
+      ${media}
+      ${playBtn}
     </a>
     <div class="card-h-body">
       ${cat}
@@ -271,7 +382,7 @@ export function errorState(message = 'Failed to load content. Please try again.'
 
 // ── SEO helpers ───────────────────────────────────────────────
 export function setPageMeta({ title, description, image, canonical }) {
-  const siteName = 'Habari Hub';
+  const siteName = 'DK';
   if (title) {
     document.title = `${title} | ${siteName}`;
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${title} | ${siteName}`);

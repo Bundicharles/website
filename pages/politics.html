@@ -2,8 +2,8 @@
 <html lang="en-KE">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Kenyan political news, analysis, and commentary from Habari Hub. Parliament, counties, elections, and policy.">
-  <title>Political News | Habari Hub</title>
+  <meta name="description" content="Kenyan political news, analysis, and commentary from DK. Parliament, counties, elections, and policy.">
+  <title>Political News | DK</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/design-system.css">
@@ -24,7 +24,7 @@
         <span class="content-label">Kenya</span>
       </div>
       <p style="color:var(--text-muted);margin-top:.25rem">In-depth reporting and analysis on Kenyan politics, parliament, elections, and county affairs.</p>
-      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem;border-left:3px solid var(--red);padding-left:.75rem">Opinion and analysis pieces are clearly labelled. Habari Hub does not fabricate political claims, quotations, or statistics.</p>
+      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem;border-left:3px solid var(--red);padding-left:.75rem">Opinion and analysis pieces are clearly labelled. DK does not fabricate political claims, quotations, or statistics.</p>
     </div>
   </div>
   <main style="padding:var(--space-2xl) 0">
@@ -45,7 +45,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
     import { api } from '../assets/js/modules/api.js';
-    import { getAppBase, cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc } from '../assets/js/modules/utils.js';
+    import { getAppBase, cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent } from '../assets/js/modules/utils.js';
     await renderHeader('Politics'); await renderFooter(); renderTicker();
 
     let currentPage=1;
@@ -59,11 +59,14 @@
         const items=res.data??[];
         if(!items.length)return;
         const s=items[0];
+        const isVideo = isVideoContent(s);
+        const heroPlayBtn = isVideo ? `
+          <div class="netflix-play-btn" aria-label="Watch video">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </div>` : '';
         const featured=document.getElementById('featured-politics');
         featured.innerHTML=`<article class="hero-card" style="min-height:380px">
-          <div class="hero-card-img">
-            <img src="${imgSrc(s.featured_image)}" alt="${esc(s.title)}" loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
-          </div>
+          ${heroMediaHtml(s, { overlay: heroPlayBtn })}
           <div class="hero-card-body">
             <span class="badge" style="margin-bottom:.5rem">Politics</span>
             <h2 class="hero-card-title" style="font-size:clamp(1.25rem,3vw,2rem)">

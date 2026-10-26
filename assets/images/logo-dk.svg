@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-labelledby="title">
+  <title id="title">DK Logo</title>
+  <rect width="120" height="120" rx="16" fill="#C62828"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        font-family="'Playfair Display','Georgia',serif" font-weight="900"
+        font-size="68" fill="#FFFFFF" letter-spacing="-0.03em">DK</text>
+</svg>

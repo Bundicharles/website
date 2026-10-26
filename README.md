@@ -1,4 +1,4 @@
-# Habari Hub – Kenyan News, Politics & Documentary Platform
+# DK – Kenyan News, Politics & Documentary Platform
 
 A production-ready editorial news platform built for Kenyan content. Features a premium dark editorial design, full CMS, PHP REST API, and MySQL database.
 

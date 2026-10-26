@@ -1,5 +1,5 @@
 -- ============================================================
--- HABARI HUB - Kenyan News, Politics & Documentary Platform
+-- DK - Kenyan News, Politics & Documentary Platform
 -- Database Schema  |  MySQL / MariaDB
 -- Timezone: UTC (display in Africa/Nairobi via application)
 -- ============================================================

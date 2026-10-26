@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
-  <title>Article Editor | Habari Hub Admin</title>
+  <title>Article Editor | DK Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin/assets/css/admin.css">
   <style>
@@ -15,7 +15,7 @@
 <body>
 <div class="admin-layout">
   <aside class="sidebar" id="admin-sidebar">
-    <div class="sidebar-header"><div class="sidebar-logo-mark">HH</div><span class="sidebar-logo-text">Habari<span>Hub</span></span></div>
+    <div class="sidebar-header"><div class="sidebar-logo-mark">DK</div><span class="sidebar-logo-text">DK</span></div>
     <nav class="sidebar-nav">
       <a href="./dashboard.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a>
       <a href="./articles.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Articles</a>
@@ -26,14 +26,14 @@
       <a href="./messages.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Messages</a>
     </nav>
     <div class="sidebar-footer">
-      <div class="user-info"><div class="user-avatar" id="sidebar-avatar">A</div><div><div class="user-name" id="sidebar-user-name">—</div><div class="user-role" id="sidebar-user-role">—</div></div></div>
+      <div class="user-info"><div class="user-avatar" id="sidebar-avatar">A</div><div><div class="user-name" id="sidebar-user-name">�</div><div class="user-role" id="sidebar-user-role">�</div></div></div>
       <button class="btn btn-outline btn-sm" id="logout-btn" style="width:100%;justify-content:center">Sign Out</button>
     </div>
   </aside>
   <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <header class="topbar">
-    <button class="btn btn-ghost sidebar-toggle" id="sidebar-toggle">☰</button>
+    <button class="btn btn-ghost sidebar-toggle" id="sidebar-toggle">?</button>
     <span class="topbar-title" id="page-title">New Article</span>
     <div style="display:flex;gap:.5rem">
       <button class="btn btn-outline btn-sm" id="save-draft-btn">Save Draft</button>
@@ -49,7 +49,7 @@
         <div class="card"><div class="card-body">
           <div class="form-group">
             <label>Title *</label>
-            <input type="text" id="title" class="form-control" placeholder="Article headline…" required style="font-size:1.05rem;font-weight:600">
+            <input type="text" id="title" class="form-control" placeholder="Article headline�" required style="font-size:1.05rem;font-weight:600">
           </div>
           <div class="form-group">
             <label>URL Slug</label>
@@ -57,7 +57,7 @@
           </div>
           <div class="form-group">
             <label>Excerpt / Summary</label>
-            <textarea id="excerpt" class="form-control" rows="3" placeholder="Short description for article listings…"></textarea>
+            <textarea id="excerpt" class="form-control" rows="3" placeholder="Short description for article listings�"></textarea>
           </div>
         </div></div>
 
@@ -70,7 +70,7 @@
               <button type="button" class="editor-btn" data-cmd="underline"><u>U</u></button>
               <button type="button" class="editor-btn" data-cmd="formatBlock" data-val="h2">H2</button>
               <button type="button" class="editor-btn" data-cmd="formatBlock" data-val="h3">H3</button>
-              <button type="button" class="editor-btn" data-cmd="insertUnorderedList">• List</button>
+              <button type="button" class="editor-btn" data-cmd="insertUnorderedList">� List</button>
               <button type="button" class="editor-btn" data-cmd="insertOrderedList">1. List</button>
               <button type="button" class="editor-btn" data-cmd="formatBlock" data-val="blockquote">Quote</button>
               <button type="button" class="editor-btn" data-cmd="removeFormat">Clear</button>
@@ -82,7 +82,7 @@
         <div class="card"><div class="card-body">
           <div class="form-group">
             <label>Video URL (YouTube or Vimeo)</label>
-            <input type="url" id="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=…">
+            <input type="url" id="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=�">
             <span style="font-size:.72rem;color:var(--muted);margin-top:.25rem;display:block">Paste an authorized YouTube or Vimeo URL. Embed will be generated automatically.</span>
           </div>
         </div></div>
@@ -92,12 +92,12 @@
           <div id="video-preview" style="margin-bottom:.75rem"></div>
           <input type="hidden" id="featured_video">
           <label class="btn btn-outline btn-sm" style="justify-content:center;cursor:pointer;margin-bottom:.5rem;width:100%">
-            📁 Upload Video
+            ?? Upload Video
             <input type="file" id="video-upload" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display:none">
           </label>
           <div class="form-group">
             <label>Or paste video URL</label>
-            <input type="text" id="video-url-input" class="form-control" placeholder="/api/uploads/images/… or https://…">
+            <input type="text" id="video-url-input" class="form-control" placeholder="/api/uploads/images/� or https://�">
           </div>
         </div></div>
 
@@ -105,7 +105,7 @@
           <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.75rem">Source Attribution</div>
           <div class="form-grid col-2">
             <div class="form-group"><label>Source Name</label><input type="text" id="source_name" class="form-control" placeholder="e.g. Nation Media"></div>
-            <div class="form-group"><label>Source URL</label><input type="url" id="source_url" class="form-control" placeholder="https://…"></div>
+            <div class="form-group"><label>Source URL</label><input type="url" id="source_url" class="form-control" placeholder="https://�"></div>
           </div>
         </div></div>
 
@@ -135,16 +135,16 @@
             </select>
           </div>
           <div class="form-group"><label>Category *</label>
-            <select id="category_id" class="form-control"><option value="">Loading…</option></select>
+            <select id="category_id" class="form-control"><option value="">Loading�</option></select>
           </div>
         </div></div>
 
         <div class="card"><div class="card-body">
           <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.75rem">Flags</div>
           <div style="display:flex;flex-direction:column;gap:.6rem">
-            <label class="form-check"><input type="checkbox" id="is_featured"><span>⭐ Featured on homepage</span></label>
-            <label class="form-check"><input type="checkbox" id="is_trending"><span>🔥 Trending</span></label>
-            <label class="form-check"><input type="checkbox" id="is_breaking"><span>⚡ Breaking news ticker</span></label>
+            <label class="form-check"><input type="checkbox" id="is_featured"><span>? Featured on homepage</span></label>
+            <label class="form-check"><input type="checkbox" id="is_trending"><span>?? Trending</span></label>
+            <label class="form-check"><input type="checkbox" id="is_breaking"><span>? Breaking news ticker</span></label>
           </div>
           <div class="form-group" style="margin-top:.75rem">
             <label>Trending Rank (lower = top)</label>
@@ -157,24 +157,24 @@
           <div id="img-preview" style="margin-bottom:.75rem"></div>
           <input type="hidden" id="featured_image">
           <label class="btn btn-outline btn-sm" style="justify-content:center;cursor:pointer;margin-bottom:.5rem;width:100%">
-            📁 Upload Image
+            ?? Upload Image
             <input type="file" id="img-upload" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
           </label>
           <div class="form-group">
             <label>Or paste image URL</label>
-            <input type="text" id="img-url-input" class="form-control" placeholder="/api/uploads/images/… or https://…">
+            <input type="text" id="img-url-input" class="form-control" placeholder="/api/uploads/images/� or https://�">
           </div>
         </div></div>
 
         <div id="delete-panel" style="display:none">
-          <button type="button" id="delete-btn" class="btn btn-danger" style="width:100%;justify-content:center">🗑 Delete Article</button>
+          <button type="button" id="delete-btn" class="btn btn-danger" style="width:100%;justify-content:center">?? Delete Article</button>
         </div>
       </div>
     </div>
   </main>
 </div>
 <div id="toast-container"></div>
-  <!-- ── Environment config (load BEFORE module scripts) ── -->
+  <!-- -- Environment config (load BEFORE module scripts) -- -->
   <script src="../assets/js/config.js"></script>
 
   <script type="module">
@@ -191,7 +191,7 @@
   const catRes = await adminFetch('/admin/categories');
   const cats   = catRes.data ?? [];
   const catSel = document.getElementById('category_id');
-  catSel.innerHTML = '<option value="">Select category…</option>' + cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  catSel.innerHTML = '<option value="">Select category�</option>' + cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
 
   // Load existing article
   if (isEdit) {
@@ -276,7 +276,7 @@
        <video controls style="width:100%;max-width:200px;border-radius:4px" preload="metadata">
          <source src="${esc(previewUrl)}" type="video/mp4">
        </video>
-       <button type="button" class="img-preview-remove" id="remove-video">✕</button>
+       <button type="button" class="img-preview-remove" id="remove-video">?</button>
      </div>`;
      document.getElementById('remove-video').addEventListener('click', () => {
        document.getElementById('featured_video').value = '';
@@ -289,7 +289,7 @@
     const previewUrl = url.startsWith('http') ? url : (base + url);
     document.getElementById('img-preview').innerHTML = `<div class="img-preview">
       <img src="${esc(previewUrl)}" alt="Preview" onerror="this.style.display='none'">
-      <button type="button" class="img-preview-remove" id="remove-img">✕</button>
+      <button type="button" class="img-preview-remove" id="remove-img">?</button>
     </div>`;
     document.getElementById('remove-img').addEventListener('click', () => {
       document.getElementById('featured_image').value = '';

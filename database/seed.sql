@@ -1,14 +1,14 @@
 -- ============================================================
--- HABARI HUB  –  Seed / Demo Data
+-- DK  –  Seed / Demo Data
 -- Run AFTER schema.sql
 -- ============================================================
 SET time_zone = "+00:00";
 
 -- Default site settings
 INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
-('site_name',           'Habari Hub',                              'general'),
+('site_name',           'DK',                              'general'),
 ('site_tagline',        'Kenya\'s Pulse – News, Politics & Docs',  'general'),
-('site_description',    'Habari Hub delivers independent Kenyan news, political commentary, and documentary stories.',  'general'),
+('site_description',    'DK delivers independent Kenyan news, political commentary, and documentary stories.',  'general'),
 ('site_email',          'info@habarihub.co.ke',                    'general'),
 ('site_phone',          '+254 700 000 000',                        'general'),
 ('site_address',        'Nairobi, Kenya',                          'general'),
@@ -17,7 +17,7 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_group`) VA
 ('youtube_url',         'https://youtube.com/@habarihub',          'social'),
 ('instagram_url',       'https://instagram.com/habarihub',         'social'),
 ('footer_about',        'Independent journalism from the heart of Kenya.',  'footer'),
-('seo_default_title',   'Habari Hub – Kenyan News & Politics',     'seo'),
+('seo_default_title',   'DK – Kenyan News & Politics',     'seo'),
 ('seo_default_desc',    'Breaking news, political analysis, and documentary stories from across Kenya.',  'seo'),
 ('og_image',            '/assets/images/og-default.jpg',           'seo'),
 ('articles_per_page',   '12',                                      'general'),
@@ -38,7 +38,7 @@ INSERT INTO `categories` (`name`, `slug`, `description`, `color`, `sort_order`) 
 INSERT INTO `users` (`username`, `email`, `password_hash`, `display_name`, `role`) VALUES
 ('admin', 'admin@habarihub.co.ke',
  '$2y$12$igaC6d0Ovw87koU6uIY7NuFT/GyyCmem3V6MriV9E2ihghaMRBQvK',
- 'Habari Hub Admin', 'admin');
+ 'DK Admin', 'admin');
 
 -- NOTE: Replace the password hash above using:
 --   php -r "echo password_hash('YourNewPassword', PASSWORD_BCRYPT, ['cost'=>12]);"

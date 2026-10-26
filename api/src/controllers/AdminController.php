@@ -156,7 +156,7 @@ class AdminController {
 
         $stmt = $db->prepare(
             "SELECT a.id, a.title, a.slug, a.status, a.content_type, a.is_featured,
-                    a.is_trending, a.is_breaking, a.published_at, a.created_at, a.updated_at,
+                    a.is_trending, a.is_breaking, a.video_url, a.published_at, a.created_at, a.updated_at,
                     u.display_name AS author_name,
                     c.name AS category_name, c.slug AS category_slug
              FROM articles a

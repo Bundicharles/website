@@ -1,6 +1,6 @@
-# Habari Hub – Deployment & Hosting Tutorial
+# DK – Deployment & Hosting Tutorial
 
-This guide walks you through deploying **Habari Hub** with:
+This guide walks you through deploying **DK** with:
 
 1. **Frontend** (static HTML, CSS, ES modules) on **Vercel** — global Edge CDN, free SSL, instant cache invalidation.
 2. **Backend** (PHP REST API + MySQL) on **Truehost Kenya** — cPanel, Apache/LiteSpeed, PHP 8.x, MySQL/MariaDB.

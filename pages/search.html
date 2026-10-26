@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="robots" content="noindex">
-  <title>Search | Habari Hub</title>
+  <title>Search | DK</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/design-system.css">
@@ -67,7 +67,7 @@
 
     async function search(){
       if(q.length<2){grid.innerHTML=emptyState('Enter at least 2 characters to search.');countEl.textContent='';return;}
-      document.title=`Search: ${q} | Habari Hub`;
+      document.title=`Search: ${q} | DK`;
       grid.innerHTML=skeletonCards(6); pag.innerHTML=''; countEl.textContent='';
       try{
         const res=await api.search({q,page:currentPage,per_page:12});

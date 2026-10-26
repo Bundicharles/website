@@ -39,7 +39,7 @@ class ArticlesController {
         $total = (int)$stmt->fetchColumn();
 
         $sql = "SELECT a.id, a.title, a.slug, a.excerpt, a.featured_image, a.featured_video,
-                       a.content_type, a.video_provider, a.video_embed_id,
+                       a.content_type, a.video_provider, a.video_url, a.video_embed_id,
                        a.source_name, a.is_featured, a.is_trending,
                        a.published_at, a.updated_at,
                        u.display_name AS author_name,
@@ -77,7 +77,7 @@ class ArticlesController {
 
         // Related articles
         $rel = $db->prepare(
-            "SELECT a.title, a.slug, a.excerpt, a.featured_image, a.featured_video, a.published_at,
+            "SELECT a.title, a.slug, a.excerpt, a.featured_image, a.featured_video, a.video_url, a.published_at,
                     c.name AS category_name, c.slug AS category_slug, c.color AS category_color
              FROM articles a
              JOIN categories c ON c.id = a.category_id
@@ -96,7 +96,7 @@ class ArticlesController {
         $db   = getDB();
         $stmt = $db->query(
             "SELECT a.id, a.title, a.slug, a.excerpt, a.featured_image, a.featured_video,
-                     a.content_type, a.published_at,
+                     a.content_type, a.video_url, a.published_at,
                     u.display_name AS author_name,
                     c.name AS category_name, c.slug AS category_slug, c.color AS category_color
              FROM articles a

@@ -10,7 +10,7 @@
   <meta property="og:image" content="">
   <meta name="twitter:card" content="summary_large_image">
 
-  <title>Loading… | Habari Hub</title>
+  <title>Loading… | DK</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -153,7 +153,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js';
     import { api, getAppBase } from './assets/js/modules/api.js';
-    import { esc, timeAgo, formatDate, imgSrc, youtubeEmbedUrl, cardHtml, errorState, setPageMeta, toast } from './assets/js/modules/utils.js';
+    import { esc, timeAgo, formatDate, imgSrc, youtubeEmbedUrl, parseVideoUrl, cardHtml, errorState, setPageMeta, toast } from './assets/js/modules/utils.js';
 
     const base = getAppBase();
 
@@ -181,9 +181,10 @@
         });
 
         // Structured data (Article schema)
+        const hasVideoLink = !!parseVideoUrl(article.video_url ? imgSrc(article.video_url) : null);
         const schema = {
           '@context': 'https://schema.org',
-          '@type': article.content_type === 'documentary'
+          '@type': (article.content_type === 'documentary' || hasVideoLink)
             ? 'VideoObject'
             : (article.featured_video ? 'VideoObject' : 'NewsArticle'),
           headline:     article.title,
@@ -191,7 +192,7 @@
           datePublished:article.published_at,
           dateModified: article.updated_at,
           author:       { '@type': 'Person', name: article.author_name },
-          publisher:    { '@type': 'Organization', name: 'Habari Hub' },
+          publisher:    { '@type': 'Organization', name: 'DK' },
           image:        article.featured_image,
         };
         const sdTag = document.createElement('script');
@@ -199,9 +200,30 @@
         sdTag.textContent = JSON.stringify(schema);
         document.head.appendChild(sdTag);
 
-        // Video embed
+        // ── Primary media: video from ANY link (YouTube, Vimeo, direct MP4/MOV/…) ──
         let videoHtml = '';
-        if (article.content_type !== 'article' && article.video_embed_id) {
+        const parsedUrl = article.video_url ? parseVideoUrl(imgSrc(article.video_url)) : null;
+        if (parsedUrl) {
+          if (parsedUrl.type === 'embed') {
+            videoHtml = `<div class="video-wrap" style="margin-bottom:var(--space-xl)">
+              <iframe src="${esc(parsedUrl.embedUrl)}" allowfullscreen loading="lazy"
+                      title="${esc(article.title)}"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+              </iframe>
+            </div>`;
+          } else if (parsedUrl.type === 'direct') {
+            videoHtml = `<div class="video-wrap" style="margin-bottom:var(--space-xl)">
+              <video controls preload="metadata"
+                     style="width:100%;height:100%;object-fit:contain;border-radius:var(--radius)">
+                <source src="${esc(parsedUrl.url)}" type="${parsedUrl.mimeType || 'video/mp4'}">
+                <a href="${esc(parsedUrl.url)}" style="display:block;text-align:center;padding:1rem">Download video</a>
+              </video>
+            </div>`;
+          }
+        }
+
+        // ── Fallback: legacy YouTube/Vimeo embed by ID ──
+        if (!videoHtml && article.content_type !== 'article' && article.video_embed_id) {
           const provider = article.video_provider;
           let embedUrl = '';
           if (provider === 'youtube') {
@@ -219,26 +241,27 @@
           }
         }
 
-         // Featured video (local upload)
-         let featuredVideoHtml = '';
-         if (article.featured_video) {
-            const videoUrl = imgSrc(article.featured_video);
-           featuredVideoHtml = `<div class="article-featured-img">
-             <video controls preload="metadata"
-                    style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)">
-               <source src="${esc(videoUrl)}" type="video/mp4">
-             </video>
-           </div>`;
-         }
-
-         // Featured image (if not documentary with video, or if no featured video)
-         let imageHtml = '';
-         if (article.featured_image && !videoHtml && !featuredVideoHtml) {
-          imageHtml = `<div class="article-featured-img">
-            <img src="${imgSrc(article.featured_image)}" alt="${esc(article.title)}"
-                 loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
+        // ── Fallback: locally uploaded featured video ──
+        let featuredVideoHtml = '';
+        if (!videoHtml && article.featured_video) {
+          const videoUrl = imgSrc(article.featured_video);
+          const parsed = parseVideoUrl(videoUrl);
+          featuredVideoHtml = `<div class="article-featured-img">
+            <video controls preload="metadata"
+                   style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius)">
+              <source src="${esc(videoUrl)}" type="${parsed?.mimeType || 'video/mp4'}">
+            </video>
           </div>`;
         }
+
+        // ── Featured image (only when no video) ──
+        let imageHtml = '';
+        if (article.featured_image && !videoHtml && !featuredVideoHtml) {
+           imageHtml = `<div class="article-featured-img">
+             <img src="${imgSrc(article.featured_image)}" alt="${esc(article.title)}"
+                  loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
+           </div>`;
+         }
 
         // Share URLs
         const pageUrl = encodeURIComponent(window.location.href);

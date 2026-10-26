@@ -1,5 +1,5 @@
 /* ============================================================
-   Habari Hub – Header & Navigation
+   DK – Header & Navigation
    ============================================================ */
 
 /* ── Site header ────────────────────────────────────────────── */
@@ -30,64 +30,37 @@
   padding-right:   max(var(--edge-pad), env(safe-area-inset-right));
 }
 
-/* ── Logo / wordmark ────────────────────────────────────────── */
-.site-logo {
-  display:     flex;
-  align-items: center;
-  gap:         var(--space-sm);
+/* ── Logo / nav home link ───────────────────────── */
+.nav-link-home {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             var(--space-sm);
+  padding:         0 var(--space-md);
+  height:          var(--header-h);
+  font-family:     var(--font-heading);
+  font-size:       1.5rem;
+  font-weight:     900;
+  color:           var(--text-primary);
+  letter-spacing:  -0.02em;
+  white-space:     nowrap;
   text-decoration: none;
-  flex-shrink: 0;
+  flex-shrink:     0;
+  position:        relative;
 }
 
-.logo-mark {
-  width:         36px;
-  height:        36px;
-  background:    var(--red);
-  border-radius: var(--radius-sm);
-  display:       flex;
-  align-items:   center;
-  justify-content: center;
-  font-family:   var(--font-heading);
-  font-weight:   900;
-  font-size:     1.1rem;
-  color:         #fff;
-  letter-spacing: -0.05em;
+.nav-logo-img {
+  width:         32px;
+  height:        32px;
+  object-fit:    contain;
   flex-shrink:   0;
 }
 
-.logo-text {
-  font-family:   var(--font-heading);
-  font-size:     1.3rem;
-  font-weight:   900;
-  color:         var(--text-primary);
-  letter-spacing: -0.02em;
-  line-height:   1;
+.nav-link-home .nav-logo-img {
+  width:  36px;
+  height: 36px;
 }
 
-.logo-text span {
-  color: var(--red);
-}
-
-.site-tagline {
-  font-size:       0.7rem;
-  font-weight:     600;
-  color:           var(--text-muted);
-  letter-spacing:  0.08em;
-  text-transform:  uppercase;
-  white-space:     nowrap;
-  overflow:        hidden;
-  text-overflow:   ellipsis;
-  max-width:       240px;
-}
-
-/* ── Primary nav ────────────────────────────────────────────── */
-.primary-nav {
-  display:     flex;
-  align-items: center;
-  gap:         0;
-  flex:        1;
-}
-
+/* ── Secondary nav links ───────────────────────────────────── */
 .nav-link {
   padding:     0 var(--space-md);
   height:      var(--header-h);
@@ -97,8 +70,8 @@
   font-weight: 600;
   color:       var(--text-secondary);
   white-space: nowrap;
-  position:    relative;
   transition:  color var(--trans-fast);
+  flex-shrink: 0;
 }
 
 .nav-link::after {
@@ -124,6 +97,38 @@
 }
 
 .nav-link.active { color: var(--red); }
+
+/* ── Mobile nav home link (DK + logo) ──────────────────────── */
+.mobile-nav-link-home {
+  display:        flex;
+  align-items:    center;
+  gap:            var(--space-sm);
+  font-family:    var(--font-heading);
+  font-size:      1.1rem;
+  font-weight:    900;
+  color:          var(--text-primary);
+  padding:        1rem var(--space-lg);
+  border-bottom:  1px solid var(--border);
+}
+
+.mobile-nav-link-home .nav-logo-img {
+  width:  28px;
+  height: 28px;
+}
+
+/* ── Primary nav ────────────────────────────────────────────── */
+.primary-nav {
+  display:     flex;
+  align-items: center;
+  gap:         var(--space-md);
+  flex:        1;
+  overflow-x:  auto;
+  overflow-y:  hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.primary-nav::-webkit-scrollbar { display: none; }
 
 /* ── Header right (search + mobile) ────────────────────────── */
 .header-right {
@@ -272,7 +277,12 @@
 @media (max-width: 768px) {
   .primary-nav { display: none; }
   .hamburger   { display: flex; }
-  .site-tagline { display: none; }
+
+  .mobile-nav-link {
+    display:      flex;
+    align-items:    center;
+    gap:            var(--space-sm);
+  }
 }
 
 /* ── Footer ─────────────────────────────────────────────────── */
@@ -297,6 +307,31 @@
 }
 
 .footer-brand .logo-text { font-size: 1.5rem; margin-bottom: var(--space-md); }
+
+/* ── Footer logo ────────────────────────────────────────────── */
+.footer-logo {
+  display:         flex;
+  align-items:     center;
+  gap:             var(--space-sm);
+  text-decoration: none;
+  flex-shrink:     0;
+}
+
+.footer-logo-img {
+  width:         40px;
+  height:        40px;
+  object-fit:    contain;
+  flex-shrink:   0;
+}
+
+.footer-logo-text {
+  font-family:     var(--font-heading);
+  font-size:       1.5rem;
+  font-weight:     900;
+  color:           var(--text-primary);
+  letter-spacing:  -0.02em;
+  line-height:     1;
+}
 
 .footer-tagline {
   color:       var(--text-muted);

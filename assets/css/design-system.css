@@ -1,5 +1,5 @@
 /* ============================================================
-   Habari Hub – Design System & Global Styles
+   DK – Design System & Global Styles
    ============================================================ */
 
 /* ── CSS Custom Properties ─────────────────────────────────── */
@@ -85,12 +85,17 @@ body {
   width:            100%;
   max-width:        100%;
   position:         relative;
+  overscroll-behavior: none;
 }
 
 main, section, header, footer {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  scroll-margin-top: var(--header-h);
+}
+#main-content {
+  scroll-margin-top: calc(var(--header-h) + var(--space-xl));
 }
 
 a { color: inherit; text-decoration: none; }
@@ -127,8 +132,8 @@ p { line-height: 1.75; color: var(--text-secondary); }
   box-sizing:    border-box;
 }
 
-.section { padding: var(--space-2xl) 0; width: 100%; max-width: 100%; overflow-x: clip; }
-.section-sm { padding: var(--space-xl) 0; width: 100%; max-width: 100%; overflow-x: clip; }
+.section { padding: var(--space-2xl) 0; width: 100%; max-width: 100%; overflow-x: clip; scroll-margin-top: calc(var(--header-h) + var(--space-xl)); }
+.section-sm { padding: var(--space-xl) 0; width: 100%; max-width: 100%; overflow-x: clip; scroll-margin-top: calc(var(--header-h) + var(--space-xl)); }
 
 /* ── Content page wrapper (Edge-to-Edge) ───────────────────── */
 .content-page {
@@ -191,6 +196,13 @@ p { line-height: 1.75; color: var(--text-secondary); }
   display:      flex;
   align-items:  center;
   gap:          var(--space-sm);
+}
+
+.section-logo {
+  width:          22px;
+  height:         22px;
+  object-fit:     contain;
+  flex-shrink:    0;
 }
 
 .section-title::before {
@@ -683,12 +695,78 @@ p { line-height: 1.75; color: var(--text-secondary); }
   background:    #000;
 }
 
-.video-wrap iframe {
+.video-wrap iframe,
+.video-wrap video {
   position: absolute;
   inset:    0;
   width:    100%;
   height:   100%;
   border:   none;
+}
+
+.video-wrap video {
+  object-fit: contain;
+}
+
+/* ── Silent video preview (cards) ─────────────────────────────── */
+.media-img {
+  position: relative;
+  z-index: 1;
+}
+
+.media-video {
+  position:    absolute;
+  inset:       0;
+  width:       100%;
+  height:      100%;
+  object-fit:  cover;
+  opacity:     0;
+  visibility:  hidden;
+  z-index:     2;
+  transition:  opacity var(--trans-fast);
+}
+
+/* Card: show video on hover, hide image */
+.card:hover .media-img,
+.card-h:hover .media-img,
+.doc-card:hover .media-img {
+  visibility: hidden;
+}
+
+.card:hover .media-video,
+.card-h:hover .media-video,
+.doc-card:hover .media-video {
+  opacity:     1;
+  visibility:  visible;
+}
+
+/* Hero: full-width silent autoplay video */
+.media-video-full {
+  width:       100%;
+  height:      100%;
+  object-fit:  cover;
+  border-radius: 0;
+}
+
+.hero-card-img video.media-video-full {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-card-img iframe.media-video-full {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.media-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ── Tag / pill ─────────────────────────────────────────────── */
@@ -1021,8 +1099,8 @@ p { line-height: 1.75; color: var(--text-secondary); }
   }
 
   #site-header { height: var(--header-h); }
-  .logo-mark { width: 26px; height: 26px; font-size: 0.85rem; }
-  .logo-text { font-size: 1.05rem; }
+  .nav-link-home { font-size: 1.25rem; }
+  .nav-logo-img { width: 28px; height: 28px; }
 
   .ticker-bar { padding: 0.18rem 0; }
   .ticker-label { font-size: 0.65rem; padding: 0.12rem 0.45rem; }

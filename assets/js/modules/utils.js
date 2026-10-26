@@ -211,7 +211,7 @@ export function cardMediaHtml(article, { preview = false } = {}) {
   }
 
   return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'" class="media-img">
-<iframe src="${esc(videoUrl)}" allow="autoplay; encrypted-media" class="media-video" title="${title}" loading="lazy"></iframe>`;
+<iframe src="${esc(videoUrl)}" allow="autoplay; encrypted-media" class="media-video" title="${title}"></iframe>`;
 }
 
 export function heroMediaHtml(article, { overlay = '' } = {}) {

@@ -719,11 +719,24 @@ p { line-height: 1.75; color: var(--text-secondary); }
   inset:       0;
   width:       100%;
   height:      100%;
-  object-fit:  cover;
   opacity:     0;
   visibility:  hidden;
   z-index:     2;
   transition:  opacity var(--trans-fast);
+  background:  var(--bg-secondary);
+}
+
+.media-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: var(--bg-secondary);
 }
 
 /* Card: show video on hover, hide image */

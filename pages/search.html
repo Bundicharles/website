@@ -45,7 +45,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
     import { api } from '../assets/js/modules/api.js';
-    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc } from '../assets/js/modules/utils.js';
+    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews } from '../assets/js/modules/utils.js';
     await renderHeader(); await renderFooter(); renderTicker();
 
     const params=new URLSearchParams(window.location.search);
@@ -79,6 +79,7 @@
       }catch(err){grid.innerHTML=errorState(err.message);}
     }
     if(q) search();
+    initVideoPreviews();
   </script>
 </body>
 </html>

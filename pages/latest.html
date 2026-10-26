@@ -46,7 +46,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
     import { api } from '../assets/js/modules/api.js';
-    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc } from '../assets/js/modules/utils.js';
+    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews } from '../assets/js/modules/utils.js';
     await renderHeader('Latest News'); await renderFooter(); renderTicker();
 
     let currentPage=1, currentCat='', currentSearch='';
@@ -113,6 +113,7 @@
       });
     }
     load();
+    initVideoPreviews();
   </script>
 </body>
 </html>

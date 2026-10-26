@@ -207,11 +207,11 @@ export function cardMediaHtml(article, { preview = false } = {}) {
   const isDirect = videoUrl.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)/i);
   if (isDirect) {
     return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'" class="media-img">
-<video src="${esc(videoUrl)}" muted autoplay loop playsinline poster="${thumb}" class="media-video"></video>`;
+<video src="${esc(videoUrl)}" muted autoplay loop playsinline poster="${thumb}" preload="none" class="media-video"></video>`;
   }
 
   return `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'" class="media-img">
-<iframe src="${esc(videoUrl)}" allow="autoplay; encrypted-media" class="media-video" title="${title}"></iframe>`;
+<iframe data-src="${esc(videoUrl)}" allow="autoplay; encrypted-media" class="media-video" title="${title}" loading="lazy"></iframe>`;
 }
 
 export function heroMediaHtml(article, { overlay = '' } = {}) {
@@ -400,4 +400,31 @@ export function setPageMeta({ title, description, image, canonical }) {
     link.href = canonical;
     document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonical);
   }
+}
+
+// ── Video preview lazy-load (prevent mobile freeze) ──────────────
+// Iframes use data-src instead of src so YouTube/other embeds
+// don't load until the user hovers (desktop). On mobile, where
+// :hover doesn't fire reliably, the iframe stays unloaded – no freeze.
+// Uses event delegation so it works with dynamically loaded content.
+export function initVideoPreviews() {
+  document.addEventListener('mouseover', e => {
+    const card = e.target.closest('.card, .card-h, .doc-card');
+    if (!card) return;
+    // Only fire when mouse enters the card from outside
+    if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+
+    const iframe = card.querySelector('iframe.media-video[data-src]');
+    if (iframe && !iframe._videoLoaded && iframe.dataset.src) {
+      iframe.src = iframe.dataset.src;
+      iframe._videoLoaded = true;
+    }
+
+    const video = card.querySelector('video.media-video[preload="none"]');
+    if (video && !video._videoPlayed) {
+      video.setAttribute('preload', 'auto');
+      video.play().catch(() => {});
+      video._videoPlayed = true;
+    }
+  });
 }

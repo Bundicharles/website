@@ -119,7 +119,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js';
     import { api, getAppBase } from './assets/js/modules/api.js';
-    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent } from './assets/js/modules/utils.js';
+    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews } from './assets/js/modules/utils.js';
 
     const base = getAppBase();
 
@@ -247,6 +247,9 @@
       loadDocumentaries(),
       loadPolitics(),
     ]);
+
+    // Lazy-load video previews on hover (prevents mobile freeze)
+    initVideoPreviews();
   </script>
 </body>
 </html>

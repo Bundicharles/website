@@ -754,6 +754,25 @@ p { line-height: 1.75; color: var(--text-secondary); }
   visibility:  visible;
 }
 
+/* Mobile: hide video previews entirely (no :hover on touch) */
+@media (hover: none) {
+  .card .media-video,
+  .card-h .media-video,
+  .doc-card .media-video {
+    display: none;
+  }
+  /* Show play indicator on image for tap-to-navigate clarity */
+  .card .media-img::after,
+  .card-h .media-img::after,
+  .doc-card .media-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,.4) 0%, transparent 50%);
+    pointer-events: none;
+  }
+}
+
 /* Hero: full-width silent autoplay video */
 .media-video-full {
   width:       100%;

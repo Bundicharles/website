@@ -2,8 +2,8 @@
 <html lang="en-KE">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Kenyan documentary films and long-form investigative journalism from Habari Hub.">
-  <title>Documentary | Habari Hub</title>
+  <meta name="description" content="Kenyan documentary films and long-form investigative journalism from DK.">
+  <title>Documentary | DK</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../assets/css/design-system.css">
@@ -21,9 +21,9 @@
   <div id="ticker" class="ticker-bar"></div>
   <div class="page-hero">
     <div class="container">
-      <h1>Documentary</h1>
+      <h1 style="display:flex;align-items:center;gap:.6rem"><img src="../assets/images/logo-dk.svg" alt="DK logo" class="section-logo">Documentary</h1>
       <p style="color:var(--text-muted)">Long-form investigative journalism, documentary films, and in-depth Kenyan stories.</p>
-      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem">All video content is hosted on authorized external platforms. Habari Hub does not host or rebroadcast unlicensed video.</p>
+      <p style="color:var(--text-muted);font-size:.8rem;margin-top:.5rem">All video content is hosted on authorized external platforms. DK does not host or rebroadcast unlicensed video.</p>
     </div>
   </div>
   <main style="padding:var(--space-2xl) 0">
@@ -40,7 +40,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
     import { api } from '../assets/js/modules/api.js';
-    import { getAppBase, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc } from '../assets/js/modules/utils.js';
+    import { getAppBase, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc, cardMediaHtml } from '../assets/js/modules/utils.js';
     await renderHeader('Documentary'); await renderFooter(); renderTicker();
 
     let currentPage=1;
@@ -54,13 +54,13 @@
         const res=await api.documentaries({page:currentPage,per_page:9});
         const items=res.data??[];
         if(!items.length){grid.innerHTML=emptyState('No documentaries published yet.');return;}
-        grid.innerHTML=items.map(item=>{
-          const img=imgSrc(item.featured_image);
+          grid.innerHTML=items.map(item=>{
+          const media=cardMediaHtml(item,{preview:true});
           const slug=esc(item.slug);
-          const hasVid=!!item.video_embed_id;
+          const hasVid=!!item.video_embed_id || !!item.featured_video || !!item.video_url;
           return `<article class="card doc-card">
             <a href="${base}/article.html?slug=${slug}" class="card-img">
-              <img src="${img}" alt="${esc(item.title)}" loading="lazy" onerror="this.src='${base}/assets/images/placeholder.svg'">
+              ${media}
               <span class="badge" style="background:#7B1FA2">Documentary</span>
               ${hasVid?`<span class="doc-badge">VIDEO</span>`:''}
             </a>

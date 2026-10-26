@@ -6,7 +6,7 @@
   <title>Dashboard | DK Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/admin/assets/css/admin.css">
+  <link rel="stylesheet" href="./assets/css/admin.css">
 </head>
 <body>
 <div class="admin-layout">
@@ -78,7 +78,7 @@
   <script src="../assets/js/config.js"></script>
 
   <script type="module">
-    import { requireAuth, initSidebar, adminFetch, esc, fmtDate, statusBadge } from '/admin/assets/js/admin-core.js';
+    import { requireAuth, initSidebar, adminFetch, esc, fmtDate, statusBadge } from './assets/js/admin-core.js';
   const user = await requireAuth();
   initSidebar(user);
 

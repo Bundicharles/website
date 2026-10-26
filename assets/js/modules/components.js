@@ -22,29 +22,30 @@ export async function getSiteSettings() {
 // ── Inject header ──────────────────────────────────────────────
 export async function renderHeader(activePage = '') {
   const settings = await getSiteSettings();
-  const siteName = settings.site_name || 'Habari Hub';
+  const siteName = 'DK';
   const siteTagline = settings.site_tagline || '';
   const base = getAppBase();
   const navLinks = [
-    { href: `${base}/`,                    label: 'Home' },
+    { href: `${base}/`, label: 'DK', logo: `${base}/assets/images/logo-dk.svg`, home: true },
     { href: `${base}/pages/latest.html`,   label: 'Latest News' },
     { href: `${base}/pages/trending.html`, label: 'Trending' },
     { href: `${base}/pages/politics.html`, label: 'Politics' },
-    { href: `${base}/pages/documentary.html`, label: 'Documentary' },
+    { href: `${base}/pages/documentary.html`, label: 'Dk' },
   ];
 
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
 
   const navHtml = navLinks.map(link => {
     const linkPath = link.href.replace(/\/$/, '') || '/';
-    const active = link.label.toLowerCase() === activePage.toLowerCase()
+    const isActive = link.label.toLowerCase() === activePage.toLowerCase()
                 || (currentPath === linkPath)
                 || (activePage === '' && (currentPath === base || currentPath === `${base}/index.html`));
-    return `<a href="${link.href}" class="nav-link${active ? ' active' : ''}">${link.label}</a>`;
+    const logoImg = link.logo ? `<img src="${link.logo}" alt="${link.label} logo" class="nav-logo-img">` : '';
+    return `<a href="${link.href}" class="nav-link${isActive ? ' active' : ''}${link.home ? ' nav-link-home' : ''}">${logoImg}${link.label}</a>`;
   }).join('');
 
   const mobileNavHtml = navLinks.map(link =>
-    `<a href="${link.href}" class="mobile-nav-link">${link.label}</a>`
+    `<a href="${link.href}" class="mobile-nav-link${link.home ? ' mobile-nav-link-home' : ''}">${link.logo ? `<img src="${link.logo}" alt="${link.label} logo" class="nav-logo-img">` : ''}${link.label}</a>`
   ).join('');
 
   const header = document.getElementById('site-header');
@@ -52,13 +53,8 @@ export async function renderHeader(activePage = '') {
 
   header.innerHTML = `
     <div class="container header-inner">
-      <a href="${base}/" class="site-logo" aria-label="${esc(siteName)} – Home">
-        <div class="logo-mark" aria-hidden="true">HH</div>
-        <span class="logo-text">${esc(siteName)}</span>
-        ${siteTagline ? `<span class="site-tagline">${esc(siteTagline)}</span>` : ''}
-      </a>
-      <nav class="primary-nav" aria-label="Main navigation">${navHtml}</nav>
-      <div class="header-right">
+     <nav class="primary-nav" aria-label="Main navigation">${navHtml}</nav>
+     <div class="header-right">
         <button class="search-toggle" id="search-toggle" aria-label="Search">
           <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
@@ -130,7 +126,7 @@ export async function renderHeader(activePage = '') {
 // ── Render footer ──────────────────────────────────────────────
 export async function renderFooter() {
   const settings = await getSiteSettings();
-  const siteName  = settings.site_name || 'Habari Hub';
+  const siteName  = 'DK';
   const aboutText = settings.footer_about || 'Independent journalism from the heart of Kenya. Delivering trusted news, political analysis, and documentary stories.';
   const twitter   = settings.twitter_url || '#';
   const facebook  = settings.facebook_url || '#';
@@ -147,10 +143,10 @@ export async function renderFooter() {
     <div class="container">
       <div class="footer-main">
         <div class="footer-brand">
-          <a href="${base}/" class="site-logo" style="margin-bottom:1rem">
-            <div class="logo-mark">HH</div>
-            <span class="logo-text">Habari<span>Hub</span></span>
-          </a>
+           <a href="${base}/" class="footer-logo" style="margin-bottom:1rem">
+             <img src="${base}/assets/images/logo-dk.svg" alt="${esc(siteName)} logo" class="footer-logo-img">
+             <span class="footer-logo-text">${esc(siteName)}</span>
+           </a>
           <p class="footer-tagline">${esc(aboutText)}</p>
           <div class="social-links">
             <a href="${esc(twitter)}" class="social-link" aria-label="Twitter" id="ft-twitter" target="_blank" rel="noopener">𝕏</a>

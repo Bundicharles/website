@@ -2,7 +2,7 @@
 <html lang="en-KE">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Latest news from Kenya – breaking stories, politics, society, and more from DK.">
+  <meta name="description" content="Latest news from Kenya ï¿½ breaking stories, politics, society, and more from DK.">
   <title>Latest News | DK</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
   <main style="padding:var(--space-2xl) 0">
     <div class="container">
       <div class="search-bar">
-        <input type="search" id="search-input" placeholder="Search latest news…" aria-label="Search articles">
+        <input type="search" id="search-input" placeholder="Search latest newsï¿½" aria-label="Search articles">
         <button id="search-btn">Search</button>
       </div>
       <div class="filter-bar" id="category-filters">
@@ -39,6 +39,13 @@
     </div>
   </main>
   <footer id="site-footer"></footer>
+    <!-- Video Modal (inline play) -->
+  <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Close">âœ•</button>
+      <div id="video-modal-player"></div>
+    </div>
+  </div>
   <div id="toast-container"></div>
   <!-- -- Environment config (load BEFORE module scripts) -- -->
   <script src="../assets/js/config.js?v=2"></script>

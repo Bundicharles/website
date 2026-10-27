@@ -39,13 +39,20 @@
   </main>
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
+  <!-- Video Modal (inline play) -->
+  <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Close">✕</button>
+      <div id="video-modal-player"></div>
+    </div>
+  </div>
   <!-- ── Environment config (load BEFORE module scripts) ── -->
   <script src="../assets/js/config.js?v=2"></script>
 
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=2';
     import { api } from '../assets/js/modules/api.js?v=2';
-    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews } from '../assets/js/modules/utils.js?v=2';
+    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews, initVideoModal } from '../assets/js/modules/utils.js?v=2';
     await renderHeader(); await renderFooter(); renderTicker();
 
     const params=new URLSearchParams(window.location.search);
@@ -80,6 +87,7 @@
     }
     if(q) search();
     initVideoPreviews();
+    initVideoModal();
   </script>
 </body>
 </html>

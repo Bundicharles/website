@@ -41,12 +41,12 @@
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
   <!-- -- Environment config (load BEFORE module scripts) -- -->
-  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/config.js?v=2"></script>
 
   <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js';
-    import { api } from '../assets/js/modules/api.js';
-    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews } from '../assets/js/modules/utils.js';
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=2';
+    import { api } from '../assets/js/modules/api.js?v=2';
+    import { cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, initVideoPreviews } from '../assets/js/modules/utils.js?v=2';
     await renderHeader('Latest News'); await renderFooter(); renderTicker();
 
     let currentPage=1, currentCat='', currentSearch='';

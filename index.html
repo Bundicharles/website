@@ -113,13 +113,13 @@
   <div id="toast-container" aria-live="polite"></div>
 
   <!-- ── Environment config (load BEFORE module scripts) ── -->
-  <script src="./assets/js/config.js"></script>
+  <script src="./assets/js/config.js?v=2"></script>
 
   <!-- ── Scripts (ES modules) ── -->
   <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js';
-    import { api, getAppBase } from './assets/js/modules/api.js';
-    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews } from './assets/js/modules/utils.js';
+    import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js?v=2';
+    import { api, getAppBase } from './assets/js/modules/api.js?v=2';
+    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews } from './assets/js/modules/utils.js?v=2';
 
     const base = getAppBase();
 

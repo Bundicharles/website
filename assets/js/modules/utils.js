@@ -1,5 +1,6 @@
 // ============================================================
 // assets/js/modules/utils.js  –  Shared frontend utilities
+// Version: 2.0.0
 // ============================================================
 import { getAppBase, getApiBase } from './api.js';
 

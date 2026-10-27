@@ -2,7 +2,7 @@
 <html lang="en-KE">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="Contact DK – reach our editorial team, send tips, or request corrections.">
+  <meta name="description" content="Contact DK ï¿½ reach our editorial team, send tips, or request corrections.">
   <title>Contact Us | DK</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -80,19 +80,19 @@
   <footer id="site-footer"></footer>
   <div id="toast-container"></div>
   <!-- -- Environment config (load BEFORE module scripts) -- -->
-  <script src="../assets/js/config.js?v=2"></script>
+  <script src="../assets/js/config.js?v=3"></script>
 
   <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=2';
-    import { api } from '../assets/js/modules/api.js?v=2';
-    import { toast } from '../assets/js/modules/utils.js?v=2';
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=3';
+    import { api } from '../assets/js/modules/api.js?v=3';
+    import { toast } from '../assets/js/modules/utils.js?v=3';
     await renderHeader(); await renderFooter(); renderTicker();
 
     document.getElementById('contact-form').addEventListener('submit', async e => {
       e.preventDefault();
       const btn=document.getElementById('submit-btn');
       const msg=document.getElementById('form-msg');
-      btn.disabled=true; btn.textContent='Sending…'; msg.className='form-msg';
+      btn.disabled=true; btn.textContent='Sendingï¿½'; msg.className='form-msg';
       const data={
         name:    document.getElementById('name').value.trim(),
         email:   document.getElementById('email').value.trim(),

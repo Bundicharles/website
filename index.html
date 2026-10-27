@@ -29,7 +29,50 @@
 <body>
 
   <!-- ── Site header ── -->
-  <header id="site-header" role="banner"></header>
+  <header id="site-header" role="banner">
+    <div class="container header-inner">
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a href="./" class="nav-link nav-link-home active"><img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK</a>
+        <a href="./pages/latest.html" class="nav-link">Latest News</a>
+        <a href="./pages/trending.html" class="nav-link">Trending</a>
+        <a href="./pages/politics.html" class="nav-link">Politics</a>
+        <a href="./pages/documentary.html" class="nav-link">Documentary</a>
+      </nav>
+      <div class="header-right">
+        <button class="search-toggle" id="search-toggle" aria-label="Search">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+      <a href="./" class="mobile-nav-link mobile-nav-link-home"><img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK</a>
+      <a href="./pages/latest.html" class="mobile-nav-link">Latest News</a>
+      <a href="./pages/trending.html" class="mobile-nav-link">Trending</a>
+      <a href="./pages/politics.html" class="mobile-nav-link">Politics</a>
+      <a href="./pages/documentary.html" class="mobile-nav-link">Documentary</a>
+    </nav>
+
+    <!-- Search overlay -->
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Site search" aria-modal="true">
+      <div class="search-box">
+        <form id="search-form" action="./pages/search.html" method="get">
+          <input type="search" name="q" id="search-input" class="search-input"
+                 placeholder="Search DK…" autocomplete="off" aria-label="Search query">
+          <button type="submit" class="search-submit" aria-label="Submit search">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </form>
+      </div>
+      <button class="search-close" id="search-close" aria-label="Close search">✕</button>
+    </div>
+  </header>
 
   <!-- ── Breaking news ticker ── -->
   <div id="ticker" class="ticker-bar" role="complementary" aria-label="Breaking news"></div>
@@ -112,19 +155,52 @@
   <!-- ── Toast container ── -->
   <div id="toast-container" aria-live="polite"></div>
 
+  <!-- ── Video Modal (inline play) ── -->
+  <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Close">✕</button>
+      <div id="video-modal-player"></div>
+    </div>
+  </div>
+
   <!-- ── Environment config (load BEFORE module scripts) ── -->
   <script src="./assets/js/config.js?v=2"></script>
 
   <!-- ── Scripts (ES modules) ── -->
-  <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js?v=2';
+   <script type="module">
+    import { renderFooter, renderTicker } from './assets/js/modules/components.js?v=2';
     import { api, getAppBase } from './assets/js/modules/api.js?v=2';
-    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews } from './assets/js/modules/utils.js?v=2';
+    import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews, initVideoModal } from './assets/js/modules/utils.js?v=2';
 
     const base = getAppBase();
 
-    // ── Bootstrap ──────────────────────────────────────────────
-    await renderHeader('Home');
+    // ── Header interactions (header is static HTML in index.html) ──
+    const header = document.getElementById('site-header');
+    const scrollHandler = () => header.classList.toggle('scrolled', window.scrollY > 10);
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+    scrollHandler();
+
+    const hamburger   = document.getElementById('hamburger');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    hamburger?.addEventListener('click', () => {
+      const open = hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    const searchToggle  = document.getElementById('search-toggle');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchClose   = document.getElementById('search-close');
+    const searchInput   = document.getElementById('search-input');
+    function openSearch() { searchOverlay.classList.add('open'); searchInput?.focus(); document.body.style.overflow = 'hidden'; }
+    function closeSearch() { searchOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+    searchToggle?.addEventListener('click', openSearch);
+    searchClose?.addEventListener('click', closeSearch);
+    searchOverlay?.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+
+    // ── Footer & ticker ──────────────────────────────────────────────
     await renderFooter();
     renderTicker();
 
@@ -250,6 +326,8 @@
 
     // Lazy-load video previews on hover (prevents mobile freeze)
     initVideoPreviews();
+    // Inline video play modal (no article page needed)
+    initVideoModal();
   </script>
 </body>
 </html>

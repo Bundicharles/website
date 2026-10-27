@@ -36,7 +36,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=2';
     import { api } from '../assets/js/modules/api.js?v=2';
-    import { cardHtml, skeletonCards, emptyState, errorState, initVideoPreviews } from '../assets/js/modules/utils.js?v=2';
+    import { cardHtml, skeletonCards, emptyState, errorState, initVideoPreviews, initVideoModal } from '../assets/js/modules/utils.js?v=2';
     await renderHeader('Trending'); await renderFooter(); renderTicker();
     const grid=document.getElementById('trending-grid');
     grid.innerHTML=skeletonCards(9);
@@ -46,6 +46,7 @@
       grid.innerHTML=items.length?items.map(cardHtml).join(''):emptyState('No trending stories at the moment.');
     }catch(err){grid.innerHTML=errorState(err.message);}
     initVideoPreviews();
+    initVideoModal();
   </script>
 </body>
 </html>

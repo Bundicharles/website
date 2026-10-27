@@ -241,7 +241,7 @@ export function heroMediaHtml(article, { overlay = '' } = {}) {
 
   return `<div class="hero-card-img">
     <iframe src="${esc(videoUrl)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
-            loading="eager" title="${title}" class="media-video-full"></iframe>
+            loading="eager" title="${title}" class="media-video-full" width="100%" height="100%"></iframe>
     ${overlay}
   </div>`;
 }
@@ -272,8 +272,9 @@ export function cardHtml(article) {
   const exerp = esc(article.excerpt || '');
   const date  = timeAgo(article.published_at);
   const isDoc = article.content_type === 'documentary' || !!article.video_url;
+  const videoUrl = getArticleVideo(article);
   const playBtn = isDoc || isVideo ? `
-    <div class="netflix-play-btn" aria-label="${isVideo ? 'Watch video' : 'Play documentary'}">
+    <div class="netflix-play-btn inline-play-btn" aria-label="${isVideo ? 'Watch video' : 'Play documentary'}"${videoUrl ? ` data-video-url="${esc(videoUrl)}"` : ''}>
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="6 3 20 12 6 21 6 3"/></svg>
     </div>` : '';
   const rankBadge = article.trending_rank ? `<span class="netflix-top-badge">#${article.trending_rank}</span>` : '';
@@ -306,8 +307,9 @@ export function cardHHtml(article) {
   const cat   = article.category_name ? `<span class="badge" style="background:${esc(article.category_color||'#C62828')};margin-bottom:4px">${esc(article.category_name)}</span>` : '';
   const isVideo = !!article.featured_video;
   const isDoc = article.content_type === 'documentary' || !!article.video_url;
+  const videoUrl = getArticleVideo(article);
   const playBtn = isDoc || isVideo ? `
-    <div class="netflix-play-btn" aria-label="${isVideo ? 'Watch video' : 'Play documentary'}">
+    <div class="netflix-play-btn inline-play-btn" aria-label="${isVideo ? 'Watch video' : 'Play documentary'}"${videoUrl ? ` data-video-url="${esc(videoUrl)}"` : ''}>
       <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="6 3 20 12 6 21 6 3"/></svg>
     </div>` : '';
   const media = cardMediaHtml(article, { preview: true });
@@ -426,5 +428,53 @@ export function initVideoPreviews() {
       video.play().catch(() => {});
       video._videoPlayed = true;
     }
+  });
+}
+
+// ── Inline video playback (no article page needed) ─────────────────
+// Click a .inline-play-btn to open a modal with the video playing.
+export function initVideoModal() {
+  const modal = document.getElementById('video-modal');
+  if (!modal) return;
+  const player = document.getElementById('video-modal-player');
+  const closeBtn = modal.querySelector('.video-modal-close');
+
+  function openVideo(url, title = '') {
+    if (!url) return;
+    const isDirect = url.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)/i);
+    if (isDirect) {
+      player.innerHTML = `<video src="${url}" muted autoplay loop playsinline class="media-video-full"></video>`;
+    } else {
+      player.innerHTML = `<iframe src="${url}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" class="media-video-full" title="${title}" loading="eager"></iframe>`;
+    }
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideo() {
+    player.innerHTML = '';
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.inline-play-btn');
+    if (!btn) return;
+    const url = btn.dataset.videoUrl;
+    if (!url) return;
+    e.preventDefault();
+    e.stopPropagation();
+    openVideo(url, btn.getAttribute('aria-label') || 'Video');
+  });
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) closeVideo();
+  });
+
+  closeBtn?.addEventListener('click', closeVideo);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeVideo();
   });
 }

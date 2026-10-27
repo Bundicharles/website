@@ -40,7 +40,7 @@
   <script type="module">
     import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=2';
     import { api } from '../assets/js/modules/api.js?v=2';
-    import { getAppBase, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc, cardMediaHtml, initVideoPreviews } from '../assets/js/modules/utils.js?v=2';
+    import { getAppBase, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc, cardMediaHtml, initVideoPreviews, initVideoModal } from '../assets/js/modules/utils.js?v=2';
     await renderHeader('Documentary'); await renderFooter(); renderTicker();
 
     let currentPage=1;
@@ -76,6 +76,7 @@
     }
     load();
     initVideoPreviews();
+    initVideoModal();
   </script>
 </body>
 </html>

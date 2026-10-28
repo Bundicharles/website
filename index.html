@@ -36,7 +36,7 @@
         <a href="./pages/latest.html" class="nav-link">Latest News</a>
         <a href="./pages/trending.html" class="nav-link">Trending</a>
         <a href="./pages/politics.html" class="nav-link">Politics</a>
-        <a href="./pages/documentary.html" class="nav-link">Dk</a>
+        <a href="./pages/documentary.html" class="nav-link">DK</a>
         <a href="./pages/reports.html" class="nav-link">Reports</a>
       </nav>
       <div class="header-right">
@@ -57,7 +57,7 @@
       <a href="./pages/latest.html" class="mobile-nav-link">Latest News</a>
       <a href="./pages/trending.html" class="mobile-nav-link">Trending</a>
       <a href="./pages/politics.html" class="mobile-nav-link">Politics</a>
-      <a href="./pages/documentary.html" class="mobile-nav-link">Dk</a>
+      <a href="./pages/documentary.html" class="mobile-nav-link">DK</a>
       <a href="./pages/reports.html" class="mobile-nav-link">Reports</a>
     </nav>
 
@@ -146,6 +146,17 @@
           <a href="./pages/politics.html" class="section-link">View all →</a>
         </div>
         <div id="politics-grid" class="grid-3"></div>
+      </div>
+    </section>
+
+    <!-- Reports/Document Section -->
+    <section class="section" id="reports-section" style="background:var(--bg-secondary);padding:var(--space-2xl) 0">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Reports & Documents</h2>
+          <a href="./pages/reports.html" class="section-link">View all →</a>
+        </div>
+        <div id="reports-grid" class="grid-3"></div>
       </div>
     </section>
 
@@ -316,6 +327,17 @@
       } catch (err) { grid.innerHTML = errorState(err.message); }
     }
 
+    // ── Reports & Documents ─────────────────────────────────────
+    async function loadReports() {
+      const grid = document.getElementById('reports-grid');
+      grid.innerHTML = skeletonCards(3);
+      try {
+        const res   = await api.reports({ per_page: 3 });
+        const items = res.data ?? [];
+        grid.innerHTML = items.length ? items.map(cardHtml).join('') : emptyState('No reports at the moment.');
+      } catch (err) { grid.innerHTML = errorState(err.message); }
+    }
+
     // ── Load all sections ──────────────────────────────────────
     await Promise.allSettled([
       loadHero(),
@@ -324,6 +346,7 @@
       loadTrendingGrid(),
       loadDocumentaries(),
       loadPolitics(),
+      loadReports(),
     ]);
 
     // Lazy-load video previews on hover (prevents mobile freeze)

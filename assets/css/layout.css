@@ -120,6 +120,7 @@
 .primary-nav {
   display:     flex;
   align-items: center;
+  justify-content: center;
   gap:         var(--space-md);
   flex:        1;
   overflow-x:  auto;

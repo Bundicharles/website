@@ -31,6 +31,7 @@ export async function renderHeader(activePage = '') {
     { href: `${base}/pages/trending.html`, label: 'Trending' },
     { href: `${base}/pages/politics.html`, label: 'Politics' },
     { href: `${base}/pages/documentary.html`, label: 'Dk' },
+    { href: `${base}/pages/reports.html`,     label: 'Reports' },
   ];
 
   const currentPath = window.location.pathname.replace(/\/$/, '') || '/';

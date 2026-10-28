@@ -71,6 +71,7 @@ if ($resource !== 'admin') {
         $method === 'GET'  && $resource === 'breaking'                     => $articles->breaking(),
         $method === 'GET'  && $resource === 'documentaries'                => $articles->documentaries(),
         $method === 'GET'  && $resource === 'politics'                     => $articles->politics(),
+        $method === 'GET'  && $resource === 'reports'                      => $articles->reports(),
         $method === 'GET'  && $resource === 'search'                       => $articles->search(),
         $method === 'GET'  && $resource === 'categories'                   => $articles->categories(),
         $method === 'GET'  && $resource === 'settings'                     => $articles->settings(),

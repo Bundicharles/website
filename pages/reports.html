@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en-KE">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="In-depth reports and investigative documents from DK.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type"       content="website">
+  <meta property="og:title"      content="Reports | DK">
+  <meta property="og:description" content="In-depth reports and investigative documents from DK.">
+  <meta property="og:image"      content="../assets/images/placeholder.svg">
+  <meta name="twitter:card"      content="summary_large_image">
+  <title>Reports | DK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/home.css">
+  <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg">
+  <style>
+    .page-hero{background:var(--bg-secondary);padding:var(--space-xl) 0;border-bottom:1px solid var(--border)}
+    .page-hero h1{font-size:clamp(1.5rem,4vw,2.25rem);font-weight:800}
+    .page-hero p{color:var(--text-muted)}
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+  <div id="ticker" class="ticker-bar"></div>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Reports</h1>
+      <p style="color:var(--text-muted)">In-depth investigative reports and long-form documents.</p>
+    </div>
+  </div>
+
+  <main style="padding:var(--space-2xl) 0">
+    <div class="container">
+      <div id="featured-reports"></div>
+      <div class="section-header" style="margin:var(--space-2xl) 0 var(--space-lg);border-bottom:1px solid var(--border);padding-bottom:var(--space-sm)">
+        <h2 class="section-title">All Reports</h2>
+      </div>
+      <div id="reports-grid" class="grid-3"></div>
+      <div id="pagination-container" style="margin-top:var(--space-xl);justify-content:center;display:flex"></div>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+  <div id="toast-container"></div>
+  <!-- Video Modal (inline play) -->
+  <div id="video-modal" class="video-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="video-modal-content">
+      <button class="video-modal-close" aria-label="Close">✕</button>
+      <div id="video-modal-player"></div>
+    </div>
+  </div>
+  <!-- Environment config (load BEFORE module scripts) -->
+  <script src="../assets/js/config.js?v=3"></script>
+
+  <script type="module">
+    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=3';
+    import { api } from '../assets/js/modules/api.js?v=3';
+    import { getAppBase, getArticleVideo, cardHtml, skeletonCards, emptyState, errorState, paginationHtml, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews, initVideoModal } from '../assets/js/modules/utils.js?v=3';
+    await renderHeader('Reports'); await renderFooter(); renderTicker();
+
+    let currentPage=1;
+    const base=getAppBase();
+    const grid=document.getElementById('reports-grid');
+    const pag=document.getElementById('pagination-container');
+
+    async function loadFeatured(){
+      try{
+        const res=await api.reports({per_page:1,page:1});
+        const items=res.data??[];
+        if(!items.length)return;
+        const s=items[0];
+        const isVideo = isVideoContent(s);
+        const heroPlayBtn = isVideo ? `
+          <div class="netflix-play-btn inline-play-btn" aria-label="Watch video" data-video-url="${esc(getArticleVideo(s))}">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </div>` : '';
+        const featured=document.getElementById('featured-reports');
+        featured.innerHTML=`<article class="hero-card" style="min-height:380px">
+          ${heroMediaHtml(s, { overlay: heroPlayBtn })}
+          <div class="hero-card-body">
+            <span class="badge" style="margin-bottom:.5rem">Reports</span>
+            <h2 class="hero-card-title" style="font-size:clamp(1.25rem,3vw,2rem)">
+              <a href="${base}/article.html?slug=${esc(s.slug)}" style="color:inherit">${esc(s.title)}</a>
+            </h2>
+            <p class="hero-card-excerpt">${esc(s.excerpt||'')}</p>
+            <div style="display:flex;align-items:center;gap:1rem">
+              <a href="${base}/article.html?slug=${esc(s.slug)}" class="btn btn-primary">Read More →</a>
+              <time style="color:var(--text-muted);font-size:.85rem">${timeAgo(s.published_at)}</time>
+            </div>
+          </div>
+        </article>`;
+      }catch(e){}
+    }
+
+    async function load(){
+      grid.innerHTML=skeletonCards(6); pag.innerHTML='';
+      try{
+        const res=await api.reports({page:currentPage,per_page:12});
+        const items=res.data??[];
+        grid.innerHTML=items.length?items.map(cardHtml).join(''):emptyState('No reports found.');
+        pag.innerHTML=paginationHtml(res.meta,p=>{currentPage=p;load();window.scrollTo({top:0,behavior:'smooth'})});
+      }catch(err){grid.innerHTML=errorState(err.message);}
+    }
+
+    await loadFeatured();
+    load();
+    initVideoPreviews();
+    initVideoModal();
+  </script>
+</body>
+</html>

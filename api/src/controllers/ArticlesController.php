@@ -222,6 +222,35 @@ class ArticlesController {
         jsonPaginated($stmt->fetchAll(), $total, $page, $perPage);
     }
 
+    // ── GET /api/reports ────────────────────────────────────────
+    public function reports(): void {
+        $page    = (int)($_GET['page']     ?? 1);
+        $perPage = (int)($_GET['per_page'] ?? 12);
+        [$page, $perPage, $offset] = paginate(0, $page, $perPage);
+
+        $db    = getDB();
+        $total = (int)$db->query(
+            "SELECT COUNT(*) FROM articles a
+             JOIN categories c ON c.id = a.category_id
+             WHERE a.status='published' AND c.slug='reports' AND a.published_at <= NOW()"
+        )->fetchColumn();
+
+        $stmt = $db->prepare(
+            "SELECT a.id, a.title, a.slug, a.excerpt, a.featured_image, a.featured_video,
+                     a.content_type, a.video_url, a.published_at, a.is_featured,
+                    u.display_name AS author_name,
+                    c.name AS category_name, c.slug AS category_slug, c.color AS category_color
+             FROM articles a
+             JOIN users u      ON u.id = a.author_id
+             JOIN categories c ON c.id = a.category_id
+             WHERE a.status = 'published' AND c.slug = 'reports' AND a.published_at <= NOW()
+             ORDER BY a.is_featured DESC, a.published_at DESC
+             LIMIT ? OFFSET ?"
+        );
+        $stmt->execute([$perPage, $offset]);
+        jsonPaginated($stmt->fetchAll(), $total, $page, $perPage);
+    }
+
     // ── GET /api/search ───────────────────────────────────────
     public function search(): void {
         $q       = trim($_GET['q'] ?? '');

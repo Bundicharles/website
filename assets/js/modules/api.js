@@ -79,6 +79,7 @@ export const api = {
   breaking:      ()               => apiFetch('/breaking'),
   documentaries: (params = {})   => apiFetch('/documentaries?' + new URLSearchParams(params)),
   politics:      (params = {})   => apiFetch('/politics?' + new URLSearchParams(params)),
+  reports:       (params = {})   => apiFetch('/reports?' + new URLSearchParams(params)),
   search:        (params = {})   => apiFetch('/search?' + new URLSearchParams(params)),
    categories:    ()               => apiFetch('/categories'),
    settings:      ()               => apiFetch('/settings'),

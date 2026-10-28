@@ -32,7 +32,8 @@ INSERT INTO `categories` (`name`, `slug`, `description`, `color`, `sort_order`) 
 ('Documentary',     'documentary',     'Long-form investigative and documentary content.','#7B1FA2', 5),
 ('Business',        'business',        'Economy, markets, and enterprise news.',         '#1565C0', 6),
 ('Society',         'society',         'Culture, health, and social affairs.',           '#2E7D32', 7),
-('Opinion',         'opinion',         'Editorials and opinion columns.',                '#F57F17', 8);
+('Opinion',         'opinion',         'Editorials and opinion columns.',                '#F57F17', 8),
+('Reports',         'reports',         'In-depth reports and investigative documents.','#059669', 9);
 
 -- Default admin user  (username: admin | password: Admin@2024  –  change immediately in production)
 INSERT INTO `users` (`username`, `email`, `password_hash`, `display_name`, `role`) VALUES

@@ -133,6 +133,7 @@ class AdminController {
         $perPage = (int)($_GET['per_page'] ?? 20);
         $status  = trim($_GET['status']    ?? '');
         $search  = trim($_GET['search']    ?? '');
+        $category= trim($_GET['category']   ?? '');
         [$page, $perPage, $offset] = paginate(0, $page, $perPage);
 
         $db     = getDB();
@@ -147,6 +148,10 @@ class AdminController {
             $where[]  = '(a.title LIKE ? OR a.excerpt LIKE ?)';
             $params[] = '%' . $search . '%';
             $params[] = '%' . $search . '%';
+        }
+        if ($category !== '') {
+            $where[]  = 'c.slug = ?';
+            $params[] = $category;
         }
         $whereStr = implode(' AND ', $where);
 

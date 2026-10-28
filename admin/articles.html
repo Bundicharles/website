@@ -16,6 +16,7 @@
       <a href="./articles.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Articles</a>
       <a href="./article-edit.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>New Article</a>
       <a href="./categories.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>Categories</a>
+      <a href="./articles.html?category=reports" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Reports</a>
       <a href="./media.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Media</a>
       <a href="./settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
       <a href="./messages.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/></svg>Messages</a>
@@ -61,9 +62,12 @@
   <script type="module">
     import { requireAuth, initSidebar, adminFetch, esc, fmtDate, statusBadge, toast, renderPagination, confirm as adminConfirm } from './assets/js/admin-core.js';
   const user = await requireAuth(); initSidebar(user);
-  let currentPage=1, currentStatus='', currentSearch='';
-  const tbody=document.getElementById('articles-tbody');
-  const pagCon=document.getElementById('pagination-container');
+    let currentPage=1, currentStatus='', currentSearch='', currentCategory='';
+    const tbody=document.getElementById('articles-tbody');
+    const pagCon=document.getElementById('pagination-container');
+    const urlParams=new URLSearchParams(window.location.search);
+    currentCategory=urlParams.get('category')||'';
+    if(currentCategory) document.querySelector('.topbar-title').textContent='Reports';
 
   async function load(){
     tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Loading�</td></tr>';
@@ -71,6 +75,7 @@
       const params={page:currentPage,per_page:20};
       if(currentStatus) params.status=currentStatus;
       if(currentSearch) params.search=currentSearch;
+      if(currentCategory) params.category=currentCategory;
       const res=await adminFetch('/admin/articles?'+new URLSearchParams(params));
       const items=res.data??[];
       if(!items.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">No articles found</td></tr>';pagCon.innerHTML='';return;}

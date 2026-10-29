@@ -124,8 +124,56 @@
   </style>
 </head>
 <body>
-  <header id="site-header"></header>
-  <div id="ticker" class="ticker-bar"></div>
+  <header id="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="./" class="nav-brand" aria-label="DK – Home">
+        <img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">
+        <span class="nav-logo-text">DK</span>
+      </a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a href="./" class="nav-link">Home</a>
+        <a href="./pages/latest.html" class="nav-link">Latest News</a>
+        <a href="./pages/trending.html" class="nav-link">Trending</a>
+        <a href="./pages/politics.html" class="nav-link">Politics</a>
+        <a href="./pages/documentary.html" class="nav-link">DK Documentary</a>
+        <a href="./pages/reports.html" class="nav-link">Reports</a>
+        <a href="./pages/about.html" class="nav-link">About</a>
+        <a href="./pages/contact.html" class="nav-link">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn search-toggle" id="search-toggle" aria-label="Search" aria-controls="search-overlay" aria-expanded="false">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="icon-btn hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false">
+          <svg width="22" height="16" fill="none" viewBox="0 0 22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3" x2="21" y2="3"/><line x1="1" y1="8" x2="21" y2="8"/><line x1="1" y1="13" x2="21" y2="13"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+      <a href="./" class="mobile-nav-link mobile-nav-link-home">
+        <img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK
+      </a>
+      <a href="./pages/latest.html" class="mobile-nav-link">Latest News</a>
+      <a href="./pages/trending.html" class="mobile-nav-link">Trending</a>
+      <a href="./pages/politics.html" class="mobile-nav-link">Politics</a>
+      <a href="./pages/documentary.html" class="mobile-nav-link">DK Documentary</a>
+      <a href="./pages/reports.html" class="mobile-nav-link">Reports</a>
+      <a href="./pages/about.html" class="mobile-nav-link">About</a>
+      <a href="./pages/contact.html" class="mobile-nav-link">Contact</a>
+    </nav>
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Site search" aria-modal="true">
+      <div class="search-box">
+        <form id="header-search-form" action="./pages/search.html" method="get">
+          <input type="search" name="q" id="header-search-input" class="search-input" placeholder="Search DK…" autocomplete="off" aria-label="Search query">
+          <button type="submit" class="search-submit" aria-label="Submit search">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </form>
+      </div>
+      <button class="search-close" id="search-close" aria-label="Close search">✕</button>
+    </div>
+  </header>
+  <div id="breaking-ticker" class="ticker-bar" role="region" aria-label="Breaking news"></div>
 
   <main id="main-content" style="padding: var(--space-2xl) 0">
     <div class="article-page">
@@ -151,16 +199,16 @@
   <script src="./assets/js/config.js?v=3"></script>
 
   <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from './assets/js/modules/components.js?v=3';
+    import { renderFooter, renderTicker } from './assets/js/modules/components.js?v=3';
+    import { initHeaderNav } from './assets/js/modules/header-nav.js?v=3';
     import { api, getAppBase } from './assets/js/modules/api.js?v=3';
     import { esc, timeAgo, formatDate, imgSrc, youtubeEmbedUrl, parseVideoUrl, cardHtml, errorState, setPageMeta, toast } from './assets/js/modules/utils.js?v=3';
 
-    const base = getAppBase();
-
-    await renderHeader();
+    initHeaderNav();
     await renderFooter();
     renderTicker();
 
+    const base   = getAppBase();
     const params = new URLSearchParams(window.location.search);
     const slug   = params.get('slug');
     const el     = document.getElementById('article-content');
@@ -256,12 +304,30 @@
 
         // ── Featured image (only when no video) ──
         let imageHtml = '';
-        if (article.featured_image && !videoHtml && !featuredVideoHtml) {
-           imageHtml = `<div class="article-featured-img">
-             <img src="${imgSrc(article.featured_image)}" alt="${esc(article.title)}"
-                  loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
-           </div>`;
+        if (!videoHtml && !featuredVideoHtml) {
+           if (article.featured_image) {
+             imageHtml = `<div class="article-featured-img">
+               <img src="${imgSrc(article.featured_image)}" alt="${esc(article.title)}"
+                    loading="eager" onerror="this.src='${base}/assets/images/placeholder.svg'">
+             </div>`;
+           } else if (article.featured_document) {
+             imageHtml = `<div class="article-featured-img" style="display:flex;align-items:center;justify-content:center;background:#1a1a1a;min-height:200px">
+               <img src="${base}/assets/images/placeholder-document.svg" alt="Document" style="max-width:120px">
+             </div>`;
+           }
          }
+
+        // Document download link
+        let documentHtml = '';
+        if (article.featured_document) {
+          const docUrl = imgSrc(article.featured_document);
+          const docName = article.featured_document.split('/').pop();
+          documentHtml = `<div style="margin:var(--space-lg) 0;padding:var(--space-md);background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;gap:var(--space-md)">
+            <span style="font-size:1.5rem">📄</span>
+            <a href="${esc(docUrl)}" target="_blank" rel="noopener" download style="color:var(--red);font-weight:600">${esc(docName)}</a>
+            <span style="color:var(--text-muted);font-size:.8rem;margin-left:auto">Download document</span>
+          </div>`;
+        }
 
         // Share URLs
         const pageUrl = encodeURIComponent(window.location.href);
@@ -290,6 +356,7 @@
             ${videoHtml}
             ${featuredVideoHtml}
             ${imageHtml}
+            ${documentHtml}
 
             <div class="article-body">
               ${article.body || `<p>${esc(article.excerpt || 'Full article not available.')}</p>`}
@@ -314,6 +381,31 @@
                  target="_blank" rel="noopener" class="share-btn">WhatsApp</a>
               <button class="share-btn" id="copy-btn">Copy Link</button>
             </div>
+
+            <!-- Engagement bar -->
+            <div class="engagement-bar" style="display:flex;gap:var(--space-md);margin-top:var(--space-xl);padding-top:var(--space-lg);border-top:1px solid var(--border);flex-wrap:wrap">
+              <button class="share-btn" id="like-btn" style="gap:.4rem">❤ Like <span id="like-count">${article.likes_count || 0}</span></button>
+              <button class="share-btn" id="share-btn" style="gap:.4rem">🔗 Share <span id="share-count">${article.shares_count || 0}</span></button>
+            </div>
+
+            <!-- Comments -->
+            <section id="comments-section" style="margin-top:var(--space-2xl)">
+              <h2 class="section-title" style="font-size:1.25rem;margin-bottom:var(--space-lg)">Comments (<span id="comments-count">${article.comments_count || 0}</span>)</h2>
+              <form id="comment-form" style="display:flex;gap:.75rem;margin-bottom:var(--space-2xl);align-items:flex-start">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--bg-card);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0;color:var(--text-muted)">?</div>
+                <div style="flex:1">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+                    <input type="text" id="c-name" class="form-control" placeholder="Your name" required style="font-size:.875rem">
+                    <input type="email" id="c-email" class="form-control" placeholder="Email (optional)" style="font-size:.875rem">
+                  </div>
+                  <textarea id="c-body" class="form-control" rows="2" placeholder="Add a comment..." required style="font-size:.875rem;margin-bottom:.5rem;resize:vertical"></textarea>
+                  <div style="display:flex;justify-content:flex-end">
+                    <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+                  </div>
+                </div>
+              </form>
+              <div id="comments-list"></div>
+            </section>
           </article>
 
           <!-- Related articles -->
@@ -330,6 +422,148 @@
 
         document.getElementById('copy-btn')?.addEventListener('click', () => {
           navigator.clipboard?.writeText(window.location.href).then(() => toast('Link copied!', 'success'));
+        });
+
+        // ── Engagement: like ────────────────────────────────
+        const likeBtn = document.getElementById('like-btn');
+        const likeCount = document.getElementById('like-count');
+        likeBtn?.addEventListener('click', async () => {
+          try {
+            const res = await api.likeArticle(article.slug);
+            likeCount.textContent = res.data.likes_count;
+            likeBtn.style.color = res.data.liked ? 'var(--red)' : '';
+          } catch (e) { toast(e.message || 'Could not like.', 'error'); }
+        });
+
+        // ── Engagement: share ────────────────────────────────
+        const shareBtn = document.getElementById('share-btn');
+        const shareCount = document.getElementById('share-count');
+        shareBtn?.addEventListener('click', async () => {
+          try {
+            if (navigator.share) {
+              await navigator.share({ title: article.title, url: window.location.href });
+            } else {
+              await navigator.clipboard?.writeText(window.location.href);
+              toast('Link copied!', 'success');
+            }
+            // increment share count locally
+            shareCount.textContent = (parseInt(shareCount.textContent) || 0) + 1;
+          } catch (e) { /* user cancelled */ }
+        });
+
+        // ── Engagement: comments ─────────────────────────────
+        async function loadComments() {
+          const list = document.getElementById('comments-list');
+          const countEl = document.getElementById('comments-count');
+          try {
+            const res = await api.comments(article.slug);
+            const comments = res.data ?? [];
+            countEl.textContent = comments.reduce((n, c) => n + 1 + (c.replies?.length || 0), 0);
+            if (!comments.length) { list.innerHTML = '<p style="color:var(--text-muted);font-size:.875rem">No comments yet. Be the first!</p>'; return; }
+            list.innerHTML = comments.map(renderComment).join('');
+            // wire reply buttons
+            list.querySelectorAll('.reply-btn').forEach(btn => {
+              btn.addEventListener('click', () => {
+                const form = btn.parentElement.querySelector('.reply-form');
+                if (form) form.style.display = form.style.display === 'none' ? 'block' : 'none';
+              });
+            });
+            // wire cancel reply
+            list.querySelectorAll('.cancel-reply').forEach(btn => {
+              btn.addEventListener('click', () => {
+                const form = btn.closest('.reply-form');
+                if (form) { form.style.display = 'none'; form.reset(); }
+              });
+            });
+            // wire toggle replies
+            list.querySelectorAll('.toggle-replies').forEach(btn => {
+              btn.addEventListener('click', () => {
+                const wrap = btn.closest('.replies-wrap');
+                const repliesList = wrap?.querySelector('.replies-list');
+                if (!repliesList) return;
+                const open = repliesList.style.display !== 'none';
+                repliesList.style.display = open ? 'none' : 'block';
+                btn.innerHTML = open
+                  ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg> ${btn.getAttribute('data-count')} replies`
+                  : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg> Hide replies`;
+              });
+            });
+            list.querySelectorAll('.reply-form').forEach(f => {
+              f.addEventListener('submit', async e => {
+                e.preventDefault();
+                const parentId = f.dataset.parent;
+                const name = f.querySelector('.reply-name').value.trim();
+                const email = f.querySelector('.reply-email').value.trim();
+                const body = f.querySelector('.reply-body').value.trim();
+                if (!name || !body) { toast('Name and comment required.', 'error'); return; }
+                try {
+                  await api.addComment(article.slug, { name, email, body, parent_id: parentId ? parseInt(parentId) : null });
+                  toast('Comment posted!', 'success');
+                  loadComments();
+                } catch (err) { toast(err.message || 'Failed to post comment.', 'error'); }
+              });
+            });
+          } catch (e) { list.innerHTML = '<p style="color:#fca5a5;font-size:.875rem">Could not load comments.</p>'; }
+        }
+
+        function renderComment(c, depth = 0) {
+          const replies = (c.replies || []);
+          const hasReplies = replies.length > 0;
+          const adminBadge = c.is_admin ? '<span style="background:var(--red);color:#fff;font-size:.6rem;padding:1px 6px;border-radius:3px;margin-left:.4rem;vertical-align:middle">Admin</span>' : '';
+          const initial = (c.author_name || '?').trim().charAt(0).toUpperCase();
+          const avatarBg = c.is_admin ? 'var(--red)' : 'var(--bg-card)';
+          const indent = depth > 0 ? 'margin-left:3rem;padding-left:1rem;border-left:2px solid var(--border)' : '';
+          const repliesHtml = hasReplies ? `
+            <div class="replies-wrap" data-parent="${c.id}" style="margin-top:.75rem">
+              <button class="toggle-replies" data-parent="${c.id}" style="background:none;border:none;color:var(--red);font-size:.8rem;cursor:pointer;padding:0;display:flex;align-items:center;gap:.35rem;margin-bottom:.5rem">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                ${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}
+              </button>
+              <div class="replies-list" data-parent="${c.id}" style="display:none">
+                ${replies.map(r => renderComment(r, depth + 1)).join('')}
+              </div>
+            </div>` : '';
+          return `<div style="${indent};margin-bottom:1.25rem" class="comment-item">
+            <div style="display:flex;gap:.75rem">
+              <div style="width:36px;height:36px;border-radius:50%;background:${avatarBg};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0">${esc(initial)}</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin-bottom:.25rem">
+                  <strong style="font-size:.875rem;color:var(--text-primary)">${esc(c.author_name)}</strong>${adminBadge}
+                  <span style="color:var(--text-muted);font-size:.75rem">${formatDate(c.created_at)}</span>
+                </div>
+                <p style="margin:0 0 .5rem;font-size:.9rem;line-height:1.6;white-space:pre-wrap;color:var(--text-secondary)">${esc(c.body)}</p>
+                <button class="reply-btn" data-id="${c.id}" style="background:none;border:none;color:var(--text-muted);font-size:.8rem;cursor:pointer;padding:0;font-weight:600">Reply</button>
+                <form class="reply-form" data-parent="${c.id}" style="display:none;margin-top:.75rem">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+                    <input type="text" class="form-control reply-name" placeholder="Your name" required style="font-size:.85rem">
+                    <input type="email" class="form-control reply-email" placeholder="Email (optional)" style="font-size:.85rem">
+                  </div>
+                  <textarea class="form-control reply-body" rows="2" placeholder="Write a reply..." required style="font-size:.85rem;margin-bottom:.5rem"></textarea>
+                  <div style="display:flex;gap:.5rem">
+                    <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                    <button type="button" class="btn btn-outline btn-sm cancel-reply">Cancel</button>
+                  </div>
+                </form>
+                ${repliesHtml}
+              </div>
+            </div>
+          </div>`;
+        }
+
+        loadComments();
+
+        document.getElementById('comment-form')?.addEventListener('submit', async e => {
+          e.preventDefault();
+          const name = document.getElementById('c-name').value.trim();
+          const email = document.getElementById('c-email').value.trim();
+          const body = document.getElementById('c-body').value.trim();
+          if (!name || !body) { toast('Name and comment required.', 'error'); return; }
+          try {
+            await api.addComment(article.slug, { name, email, body, parent_id: null });
+            toast('Comment posted!', 'success');
+            document.getElementById('comment-form').reset();
+            loadComments();
+          } catch (err) { toast(err.message || 'Failed to post comment.', 'error'); }
         });
       } catch (err) {
         if (err.status === 404) {

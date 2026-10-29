@@ -28,8 +28,56 @@
   </style>
 </head>
 <body>
-  <header id="site-header"></header>
-  <div id="ticker" class="ticker-bar"></div>
+  <header id="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="../" class="nav-brand" aria-label="DK – Home">
+        <img src="../assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">
+        <span class="nav-logo-text">DK</span>
+      </a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a href="../" class="nav-link">Home</a>
+        <a href="../pages/latest.html" class="nav-link">Latest News</a>
+        <a href="../pages/trending.html" class="nav-link">Trending</a>
+        <a href="../pages/politics.html" class="nav-link">Politics</a>
+        <a href="../pages/documentary.html" class="nav-link">DK Documentary</a>
+        <a href="../pages/reports.html" class="nav-link">Reports</a>
+        <a href="../pages/about.html" class="nav-link">About</a>
+        <a href="../pages/contact.html" class="nav-link" aria-current="page">Contact</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn search-toggle" id="search-toggle" aria-label="Search" aria-controls="search-overlay" aria-expanded="false">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="icon-btn hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false">
+          <svg width="22" height="16" fill="none" viewBox="0 0 22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3" x2="21" y2="3"/><line x1="1" y1="8" x2="21" y2="8"/><line x1="1" y1="13" x2="21" y2="13"/></svg>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+      <a href="../" class="mobile-nav-link mobile-nav-link-home">
+        <img src="../assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK
+      </a>
+      <a href="../pages/latest.html" class="mobile-nav-link">Latest News</a>
+      <a href="../pages/trending.html" class="mobile-nav-link">Trending</a>
+      <a href="../pages/politics.html" class="mobile-nav-link">Politics</a>
+      <a href="../pages/documentary.html" class="mobile-nav-link">DK Documentary</a>
+      <a href="../pages/reports.html" class="mobile-nav-link">Reports</a>
+      <a href="../pages/about.html" class="mobile-nav-link">About</a>
+      <a href="../pages/contact.html" class="mobile-nav-link" aria-current="page">Contact</a>
+    </nav>
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Site search" aria-modal="true">
+      <div class="search-box">
+        <form id="header-search-form" action="../pages/search.html" method="get">
+          <input type="search" name="q" id="header-search-input" class="search-input" placeholder="Search DK…" autocomplete="off" aria-label="Search query">
+          <button type="submit" class="search-submit" aria-label="Submit search">
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+        </form>
+      </div>
+      <button class="search-close" id="search-close" aria-label="Close search">✕</button>
+    </div>
+  </header>
+  <div id="breaking-ticker" class="ticker-bar" role="region" aria-label="Breaking news"></div>
   <div class="page-hero"><div class="container"><h1>Contact Us</h1><p style="color:var(--text-muted)">We'd love to hear from you.</p></div></div>
   <main>
     <div class="container">
@@ -83,28 +131,54 @@
   <script src="../assets/js/config.js?v=3"></script>
 
   <script type="module">
-    import { renderHeader, renderFooter, renderTicker } from '../assets/js/modules/components.js?v=3';
+    import { renderFooter, renderTicker } from '../assets/js/modules/components.js?v=3';
+    import { initHeaderNav } from '../assets/js/modules/header-nav.js?v=3';
     import { api } from '../assets/js/modules/api.js?v=3';
     import { toast } from '../assets/js/modules/utils.js?v=3';
-    await renderHeader(); await renderFooter(); renderTicker();
+    initHeaderNav();
+    await renderFooter(); renderTicker();
+    try {
+      const res = await api.settings();
+      const st = res.data ?? {};
+      const email = st.site_email || 'info@habarihub.co.ke';
+      const phone = st.site_phone || '';
+      const address = st.site_address || 'Nairobi, Kenya';
+      const intro = st.contact_intro || '';
+      const emailLink = document.querySelector('.contact-info-card a[href^="mailto:"]');
+      if (emailLink) { emailLink.href = 'mailto:' + email; emailLink.textContent = email; }
+      const locSpan = document.querySelector('.contact-info-card .info-item:nth-child(2) span');
+      if (locSpan) locSpan.textContent = address;
+      if (intro) {
+        const h3 = document.querySelector('.contact-info-card h3');
+        if (h3) h3.insertAdjacentHTML('afterend', `<p style="font-size:.875rem;color:var(--text-muted);margin-bottom:var(--space-md)">${intro}</p>`);
+      }
+    } catch (e) { /* keep static content */ }
 
     document.getElementById('contact-form').addEventListener('submit', async e => {
       e.preventDefault();
       const btn=document.getElementById('submit-btn');
       const msg=document.getElementById('form-msg');
-      btn.disabled=true; btn.textContent='Sending�'; msg.className='form-msg';
+      msg.className='form-msg';
       const data={
         name:    document.getElementById('name').value.trim(),
         email:   document.getElementById('email').value.trim(),
         subject: document.getElementById('subject').value.trim(),
         message: document.getElementById('message').value.trim(),
       };
+      const errs=[];
+      if(!data.name||data.name.length>200) errs.push('Valid name required.');
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) errs.push('Valid email required.');
+      if(!data.subject||data.subject.length>300) errs.push('Valid subject required.');
+      if(data.message.length>5000) errs.push('Message too long (max 5000 chars).');
+      if(errs.length){ msg.className='form-msg error'; msg.textContent=errs.join(' '); return; }
+      btn.disabled=true; btn.textContent='Sending...';
       try{
         const res=await api.contact(data);
         msg.className='form-msg success'; msg.textContent=res.message||'Message sent successfully!';
         e.target.reset();
       }catch(err){
-        msg.className='form-msg error'; msg.textContent=err.message||'Failed to send message.';
+        const detail=(err.data&&Array.isArray(err.data.errors))?err.data.errors.join(' '):'';
+        msg.className='form-msg error'; msg.textContent=(err.message||'Failed to send message.')+(detail?' '+detail:'');
       }
       btn.disabled=false; btn.textContent='Send Message';
     });

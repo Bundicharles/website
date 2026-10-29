@@ -17,7 +17,7 @@ class ContactController {
         if ($name    === '' || mb_strlen($name)    > 200) $errors[] = 'Valid name required.';
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))    $errors[] = 'Valid email required.';
         if ($subject === '' || mb_strlen($subject) > 300) $errors[] = 'Valid subject required.';
-        if (mb_strlen($message) < 10)                      $errors[] = 'Message too short.';
+        // Minimum message length check removed per request
         if (mb_strlen($message) > 5000)                    $errors[] = 'Message too long.';
 
         if ($errors) jsonError(422, 'Validation failed.', $errors);

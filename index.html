@@ -31,53 +31,58 @@
   <!-- ── Site header ── -->
   <header id="site-header" role="banner">
     <div class="container header-inner">
+      <a href="./" class="nav-brand" aria-label="DK – Home">
+        <img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">
+        <span class="nav-logo-text">DK</span>
+      </a>
       <nav class="primary-nav" aria-label="Main navigation">
-        <a href="./" class="nav-link nav-link-home active">
+        <a href="./" class="nav-link" aria-current="page">Home</a>
         <a href="./pages/latest.html" class="nav-link">Latest News</a>
         <a href="./pages/trending.html" class="nav-link">Trending</a>
         <a href="./pages/politics.html" class="nav-link">Politics</a>
-        <a href="./pages/documentary.html" class="nav-link">DK</a>
+        <a href="./pages/documentary.html" class="nav-link">DK Documentary</a>
         <a href="./pages/reports.html" class="nav-link">Reports</a>
+        <a href="./pages/about.html" class="nav-link">About</a>
+        <a href="./pages/contact.html" class="nav-link">Contact</a>
       </nav>
-      <div class="header-right">
-        <button class="search-toggle" id="search-toggle" aria-label="Search">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <div class="header-actions">
+        <button class="icon-btn search-toggle" id="search-toggle" aria-label="Search" aria-controls="search-overlay" aria-expanded="false">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
         </button>
-        <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
+        <button class="icon-btn hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-controls="mobile-menu" aria-expanded="false">
+          <svg width="22" height="16" fill="none" viewBox="0 0 22 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="3" x2="21" y2="3"/><line x1="1" y1="8" x2="21" y2="8"/><line x1="1" y1="13" x2="21" y2="13"/></svg>
         </button>
       </div>
     </div>
 
     <!-- Mobile menu -->
     <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
-      <a href="./" class="mobile-nav-link mobile-nav-link-home"><img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK</a>
+      <a href="./" class="mobile-nav-link mobile-nav-link-home" aria-current="page">
+        <img src="./assets/images/logo-dk.svg" alt="DK logo" class="nav-logo-img">DK
+      </a>
       <a href="./pages/latest.html" class="mobile-nav-link">Latest News</a>
       <a href="./pages/trending.html" class="mobile-nav-link">Trending</a>
       <a href="./pages/politics.html" class="mobile-nav-link">Politics</a>
-      <a href="./pages/documentary.html" class="mobile-nav-link">DK</a>
+      <a href="./pages/documentary.html" class="mobile-nav-link">DK Documentary</a>
       <a href="./pages/reports.html" class="mobile-nav-link">Reports</a>
+      <a href="./pages/about.html" class="mobile-nav-link">About</a>
+      <a href="./pages/contact.html" class="mobile-nav-link">Contact</a>
     </nav>
 
     <!-- Search overlay -->
     <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Site search" aria-modal="true">
       <div class="search-box">
-        <form id="search-form" action="./pages/search.html" method="get">
-          <input type="search" name="q" id="search-input" class="search-input"
+        <form id="header-search-form" action="./pages/search.html" method="get">
+          <input type="search" name="q" id="header-search-input" class="search-input"
                  placeholder="Search DK…" autocomplete="off" aria-label="Search query">
           <button type="submit" class="search-submit" aria-label="Submit search">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
           </button>
         </form>
       </div>
       <button class="search-close" id="search-close" aria-label="Close search">✕</button>
     </div>
   </header>
-
-  <!-- ── Breaking news ticker ── -->
-  <div id="ticker" class="ticker-bar" role="complementary" aria-label="Breaking news"></div>
 
   <!-- ── Main content ── -->
   <main id="main-content">
@@ -88,6 +93,9 @@
         <div id="hero-container"></div>
       </div>
     </section>
+
+    <!-- Breaking News ticker (below hero) -->
+    <div id="breaking-ticker" class="ticker-bar" role="region" aria-label="Breaking news"></div>
 
     <!-- Latest + Sidebar -->
     <section class="section" id="latest-section">
@@ -183,39 +191,16 @@
    <script type="module">
     import { renderFooter, renderTicker } from './assets/js/modules/components.js?v=3';
     import { api, getAppBase } from './assets/js/modules/api.js?v=3';
+    import { initHeaderNav } from './assets/js/modules/header-nav.js?v=3';
     import { cardHtml, cardHHtml, skeletonCards, emptyState, errorState, esc, timeAgo, imgSrc, heroMediaHtml, isVideoContent, initVideoPreviews, initVideoModal } from './assets/js/modules/utils.js?v=3';
+
+    initHeaderNav();
 
     const base = getAppBase();
 
-    // ── Header interactions (header is static HTML in index.html) ──
-    const header = document.getElementById('site-header');
-    const scrollHandler = () => header.classList.toggle('scrolled', window.scrollY > 10);
-    window.addEventListener('scroll', scrollHandler, { passive: true });
-    scrollHandler();
-
-    const hamburger   = document.getElementById('hamburger');
-    const mobileMenu  = document.getElementById('mobile-menu');
-    hamburger?.addEventListener('click', () => {
-      const open = hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open', open);
-      hamburger.setAttribute('aria-expanded', open);
-      document.body.style.overflow = open ? 'hidden' : '';
-    });
-
-    const searchToggle  = document.getElementById('search-toggle');
-    const searchOverlay = document.getElementById('search-overlay');
-    const searchClose   = document.getElementById('search-close');
-    const searchInput   = document.getElementById('search-input');
-    function openSearch() { searchOverlay.classList.add('open'); searchInput?.focus(); document.body.style.overflow = 'hidden'; }
-    function closeSearch() { searchOverlay.classList.remove('open'); document.body.style.overflow = ''; }
-    searchToggle?.addEventListener('click', openSearch);
-    searchClose?.addEventListener('click', closeSearch);
-    searchOverlay?.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
-
-    // ── Footer & ticker ──────────────────────────────────────────────
+    // ── Footer & ticker ──────────────────────────────────────────
     await renderFooter();
-    renderTicker();
+    renderTicker('breaking-ticker');
 
     // ── Hero (featured) ───────────────────────────────────────
     async function loadHero() {

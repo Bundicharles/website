@@ -81,6 +81,9 @@ export const api = {
   politics:      (params = {})   => apiFetch('/politics?' + new URLSearchParams(params)),
   reports:       (params = {})   => apiFetch('/reports?' + new URLSearchParams(params)),
   search:        (params = {})   => apiFetch('/search?' + new URLSearchParams(params)),
+  likeArticle:   (slug)          => apiFetch('/articles/' + encodeURIComponent(slug) + '/like', { method: 'POST', body: '{}' }),
+  comments:      (slug)          => apiFetch('/articles/' + encodeURIComponent(slug) + '/comments'),
+  addComment:    (slug, data)    => apiFetch('/articles/' + encodeURIComponent(slug) + '/comments', { method: 'POST', body: JSON.stringify(data) }),
    categories:    ()               => apiFetch('/categories'),
    settings:      ()               => apiFetch('/settings'),
 
@@ -123,6 +126,10 @@ export const api = {
   // Admin – messages
   adminMessages:  ()   => apiFetch('/admin/messages'),
   adminMessage:   (id) => apiFetch(`/admin/messages/${id}`),
+  adminEngagement:       ()        => apiFetch('/admin/engagement'),
+  adminReplyEngagement:  (id,data) => apiFetch('/admin/engagement/' + id + '/reply', { method: 'POST', body: JSON.stringify(data) }),
+  adminDeleteEngagement: (id)     => apiFetch('/admin/engagement/' + id, { method: 'DELETE' }),
+  adminUpdateEngagement: (id,data)=> apiFetch('/admin/engagement/' + id, { method: 'PUT', body: JSON.stringify(data) }),
 };
 
 export { ApiError };

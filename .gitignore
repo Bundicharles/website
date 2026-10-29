@@ -48,3 +48,7 @@ api/setup/
 # Local database dumps and backups
 *.sql.bak
 *.sql.backup
+
+# Documents uploads (don't commit user uploads to git)
+api/uploads/documents/*
+!api/uploads/documents/.gitkeep

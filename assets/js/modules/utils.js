@@ -197,7 +197,8 @@ export function isVideoContent(article) {
 
 export function cardMediaHtml(article, { preview = false } = {}) {
   const base = getAppBase();
-  const thumb = imgSrc(article.featured_image);
+  const hasDoc = !article.featured_image && !!article.featured_document;
+  const thumb = hasDoc ? `${base}/assets/images/placeholder-document.svg` : imgSrc(article.featured_image);
   const title = esc(article.title);
   const videoUrl = preview ? getArticleVideo(article) : null;
 

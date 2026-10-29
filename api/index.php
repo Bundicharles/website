@@ -64,6 +64,9 @@ if ($resource !== 'admin') {
     match (true) {
         $method === 'GET'  && $resource === 'health'                       => $articles->health(),
         $method === 'GET'  && $resource === 'articles' && $sub === ''      => $articles->index(),
+        $method === 'POST' && $resource === 'articles' && $sub !== '' && $id === 'like'     => $articles->like($sub),
+        $method === 'GET'  && $resource === 'articles' && $sub !== '' && $id === 'comments' => $articles->comments($sub),
+        $method === 'POST' && $resource === 'articles' && $sub !== '' && $id === 'comments' => $articles->addComment($sub),
         $method === 'GET'  && $resource === 'articles' && $sub !== ''      => $articles->show($sub),
         $method === 'GET'  && $resource === 'featured'                     => $articles->featured(),
         $method === 'GET'  && $resource === 'trending'                     => $articles->trending(),
@@ -116,6 +119,11 @@ match (true) {
     // Messages
     $method === 'GET'  && $sub === 'messages' && $id === ''                => $admin->listMessages(),
     $method === 'GET'  && $sub === 'messages' && is_numeric($id)           => $admin->getMessage((int)$id),
+    // Engagement (comments)
+    $method === 'GET'    && $sub === 'engagement' && $id === ''                      => $admin->listEngagement(),
+    $method === 'POST'   && $sub === 'engagement' && is_numeric($id) && isset($segments[3]) && $segments[3]==='reply' => $admin->replyEngagement((int)$id),
+    $method === 'DELETE' && $sub === 'engagement' && is_numeric($id)                 => $admin->deleteEngagement((int)$id),
+    $method === 'PUT'    && $sub === 'engagement' && is_numeric($id)                 => $admin->updateEngagement((int)$id),
 
     default => jsonError(404, 'Admin endpoint not found.'),
 };

@@ -66,9 +66,13 @@ CREATE TABLE `articles` (
   `body`            LONGTEXT        NULL,
   `featured_image`  VARCHAR(500)    NULL  COMMENT 'Relative path under /api/uploads/ or external URL',
   `featured_video`  VARCHAR(500)    NULL  COMMENT 'Relative path to locally uploaded video or external URL',
+  `featured_document` VARCHAR(500)   NULL  COMMENT 'Relative path to locally uploaded document or external URL',
+  `likes_count`       INT UNSIGNED   NOT NULL DEFAULT 0,
+  `shares_count`      INT UNSIGNED   NOT NULL DEFAULT 0,
+  `comments_count`    INT UNSIGNED   NOT NULL DEFAULT 0,
   `author_id`       INT UNSIGNED    NOT NULL,
   `category_id`     INT UNSIGNED    NOT NULL,
-  `content_type`    ENUM('article','video','documentary') NOT NULL DEFAULT 'article',
+  `content_type`    ENUM('article','video','documentary','report','document') NOT NULL DEFAULT 'article',
   `video_provider`  VARCHAR(50)     NULL  COMMENT 'youtube | vimeo | other',
   `video_url`       VARCHAR(1000)   NULL,
   `video_embed_id`  VARCHAR(200)    NULL,
@@ -100,6 +104,41 @@ CREATE TABLE `articles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- -------------------------------------------------------
+-- article_likes (visitor likes per article)
+-- -------------------------------------------------------
+CREATE TABLE `article_likes` (
+  `id`         INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+  `article_id` INT UNSIGNED  NOT NULL,
+  `visitor_id` VARCHAR(64)   NOT NULL,
+  `created_at` TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_article_visitor` (`article_id`, `visitor_id`),
+  KEY `idx_article` (`article_id`),
+  CONSTRAINT `fk_likes_article` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -------------------------------------------------------
+-- article_comments (comments + nested replies)
+-- -------------------------------------------------------
+CREATE TABLE `article_comments` (
+  `id`          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
+  `article_id`  INT UNSIGNED  NOT NULL,
+  `parent_id`   INT UNSIGNED  NULL,
+  `author_name` VARCHAR(120)  NOT NULL,
+  `author_email` VARCHAR(255) NULL,
+  `body`        TEXT          NOT NULL,
+  `is_admin`    TINYINT(1)    NOT NULL DEFAULT 0,
+  `is_approved` TINYINT(1)    NOT NULL DEFAULT 1,
+  `created_at`  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_article` (`article_id`),
+  KEY `idx_parent` (`parent_id`),
+  CONSTRAINT `fk_comments_article` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_comments_parent` FOREIGN KEY (`parent_id`) REFERENCES `article_comments` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- -------------------------------------------------------
 -- article_categories (many-to-many secondary tags)
 -- -------------------------------------------------------
 CREATE TABLE `article_categories` (
@@ -119,7 +158,7 @@ CREATE TABLE `media` (
   `filename`    VARCHAR(300)   NOT NULL,
   `original_name` VARCHAR(300) NOT NULL,
   `mime_type`   VARCHAR(100)   NOT NULL,
-  `media_type`  ENUM('image','video') NOT NULL DEFAULT 'image',
+  `media_type`  ENUM('image','video','document') NOT NULL DEFAULT 'image',
   `file_size`   INT UNSIGNED   NOT NULL DEFAULT 0,
   `width`       SMALLINT UNSIGNED NULL,
   `height`      SMALLINT UNSIGNED NULL,

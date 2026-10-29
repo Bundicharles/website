@@ -63,6 +63,16 @@
   --edge-pad:     clamp(0.85rem, 2.2vw, 2.5rem);
 }
 
+/* ── Respect prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
 /* ── Reset & Base ──────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -551,60 +561,69 @@ p { line-height: 1.75; color: var(--text-secondary); }
   transform: scale(1.02);
 }
 
-/* ── Breaking news ticker ──────────────────────────────────── */
+/* ── Breaking news ticker (static) ────────────────────────────── */
 .ticker-bar {
-  background: var(--red);
-  padding:    0.4rem 0;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding:    var(--space-xs) 0;
   overflow:   hidden;
 }
 
 .ticker-inner {
-  display:   flex;
-  align-items: center;
-  gap:       0;
+  display:        flex;
+  align-items:    center;
+  gap:            var(--space-md);
+  flex-wrap:      nowrap;
 }
 
 .ticker-label {
-  background:   rgba(0,0,0,0.3);
-  color:        #fff;
-  font-size:    0.75rem;
-  font-weight:  800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding:      0.2rem 0.75rem;
-  white-space:  nowrap;
-  flex-shrink:  0;
-  margin-right: var(--space-md);
+  background:       var(--red);
+  color:            #fff;
+  font-size:        0.68rem;
+  font-weight:      800;
+  letter-spacing:   0.08em;
+  text-transform:   uppercase;
+  padding:          2px 0.75rem;
+  border-radius:    var(--radius-sm);
+  white-space:      nowrap;
+  flex-shrink:      0;
 }
 
 .ticker-track {
-  overflow:    hidden;
-  flex:        1;
+  flex:       1;
+  min-width:  0;
+  overflow:   hidden;
 }
 
 .ticker-items {
-  display:   inline-flex;
-  gap:       2rem;
-  animation: tickerScroll 40s linear infinite;
-  white-space: nowrap;
+  display:         inline-flex;
+  align-items:     center;
+  gap:             2rem;
+  white-space:     nowrap;
+  animation:       tickerScroll 40s linear infinite;
 }
 
 .ticker-items:hover { animation-play-state: paused; }
 
 .ticker-item {
-  font-size:  0.8rem;
-  font-weight: 600;
-  color:      #fff;
-  display:    inline-flex;
-  align-items: center;
-  gap:        0.4rem;
+  font-size:       0.8rem;
+  font-weight:     600;
+  color:           var(--text-primary);
+  display:         inline-flex;
+  align-items:     center;
+  white-space:     nowrap;
+  transition:      color var(--trans-fast);
 }
 
 .ticker-item::before {
   content:      '●';
-  font-size:    0.5rem;
-  opacity:      0.7;
+  color:        var(--red);
+  font-size:    0.55rem;
+  opacity:      0.9;
 }
+
+.ticker-item:hover { color: var(--red-hover); }
 
 @keyframes tickerScroll {
   from { transform: translateX(0); }
@@ -1191,12 +1210,12 @@ p { line-height: 1.75; color: var(--text-secondary); }
   }
 
   #site-header { height: var(--header-h); }
-  .nav-link-home { font-size: 1.25rem; }
+  .nav-brand { font-size: 1.25rem; }
   .nav-logo-img { width: 28px; height: 28px; }
 
-  .ticker-bar { padding: 0.18rem 0; }
-  .ticker-label { font-size: 0.65rem; padding: 0.12rem 0.45rem; }
-  .ticker-item { font-size: 0.72rem; }
+  .ticker-bar { padding: 0.1rem 0; }
+  .ticker-label { font-size: 0.6rem; padding: 1px 0.4rem; }
+  .ticker-item { font-size: 0.68rem; }
 
   /* 2-column landscape grid for feeds when phone is held sideways */
   #articles-grid,

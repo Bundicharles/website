@@ -1,5 +1,5 @@
 -- ============================================================
--- DK  –  Seed / Demo Data
+-- DK  Ã¢â‚¬â€œ  Seed / Demo Data
 -- Run AFTER schema.sql
 -- ============================================================
 SET time_zone = "+00:00";
@@ -7,7 +7,7 @@ SET time_zone = "+00:00";
 -- Default site settings
 INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
 ('site_name',           'DK',                              'general'),
-('site_tagline',        'Kenya\'s Pulse – News, Politics & Docs',  'general'),
+('site_tagline',        'Kenya\'s Pulse Ã¢â‚¬â€œ News, Politics & Docs',  'general'),
 ('site_description',    'DK delivers independent Kenyan news, political commentary, and documentary stories.',  'general'),
 ('site_email',          'info@habarihub.co.ke',                    'general'),
 ('site_phone',          '+254 700 000 000',                        'general'),
@@ -17,10 +17,10 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`, `setting_group`) VA
 ('youtube_url',         'https://youtube.com/@habarihub',          'social'),
 ('instagram_url',       'https://instagram.com/habarihub',         'social'),
 ('footer_about',        'Independent journalism from the heart of Kenya.',  'footer'),
-('seo_default_title',   'DK – Kenyan News & Politics',     'seo'),
+('seo_default_title',   'DK Ã¢â‚¬â€œ Kenyan News & Politics',     'seo'),
 ('seo_default_desc',    'Breaking news, political analysis, and documentary stories from across Kenya.',  'seo'),
 ('og_image',            '/assets/images/og-default.jpg',           'seo'),
-('articles_per_page',   '12',                                      'general'),
+('articles_per_page',   '12',                                      'general'),\n('about_content',       '<p>DK is an independent Kenyan digital media platform committed to delivering accurate, fair, and timely news, political analysis, and documentary journalism.</p><p>We cover breaking news, parliamentary affairs, county government, economic stories, and produce long-form documentary content that goes beyond the headlines.</p>', 'general'),\n('contact_intro',       'We would love to hear from you. Send us a message, a story tip, or a correction request.', 'general'),
 ('allow_comments',      '0',                                       'general');
 
 -- Categories
@@ -35,7 +35,7 @@ INSERT INTO `categories` (`name`, `slug`, `description`, `color`, `sort_order`) 
 ('Opinion',         'opinion',         'Editorials and opinion columns.',                '#F57F17', 8),
 ('Reports',         'reports',         'In-depth reports and investigative documents.','#059669', 9);
 
--- Default admin user  (username: admin | password: Admin@2024  –  change immediately in production)
+-- Default admin user  (username: admin | password: Admin@2024  Ã¢â‚¬â€œ  change immediately in production)
 INSERT INTO `users` (`username`, `email`, `password_hash`, `display_name`, `role`) VALUES
 ('admin', 'admin@habarihub.co.ke',
  '$2y$12$igaC6d0Ovw87koU6uIY7NuFT/GyyCmem3V6MriV9E2ihghaMRBQvK',
@@ -93,5 +93,22 @@ VALUES
    '<p>The government\'s affordable housing programme has generated significant debate among urban planners, civil society organisations, and ordinary Kenyans who find themselves caught between the promise of decent shelter and the fear of displacement.</p>',
    '/api/uploads/images/sample-opinion.jpg',
    1, 8, 'article', 'published', 0, 0, 0, 0,
-  DATE_SUB(NOW(), INTERVAL 12 HOUR)
+  DATE_SUB(NOW(), INTERVAL 12 HOUR),
+(
+  'Independent Audit Report: County Revenue Collection Gaps',
+  'independent-audit-report-county-revenue-collection-gaps',
+   'An investigative report exposing systemic gaps in county revenue collection, weak audit trails, and unremitted funds across several devolved units.',
+   '<p>A comprehensive audit of county revenue systems reveals significant shortfalls in collection, weak internal controls, and billions of shillings in unremitted funds. The report calls for urgent reforms in financial management and oversight.</p><p>County governments have been urged to adopt digital revenue collection systems and strengthen audit trails to curb leakages.</p>',
+   '/api/uploads/images/sample-counties.jpg',
+   1, 9, 'article', 'published', 1, 0, 0, 0,
+  DATE_SUB(NOW(), INTERVAL 3 HOUR)
+),
+(
+  'Documentary: Voices from the Margins of Kenya',
+  'documentary-voices-from-the-margins-of-kenya',
+   'A long-form documentary giving voice to communities often left out of mainstream national discourse, from arid northern counties to informal settlements.',
+   '<p>This documentary explores the lived realities of Kenyans in marginalised regions, highlighting resilience, challenges, and aspirations. It features on-the-ground reporting and interviews with community leaders.</p>',
+   '/api/uploads/images/sample-documentary.jpg',
+   1, 5, 'documentary', 'published', 0, 1, 0, 0,
+  DATE_SUB(NOW(), INTERVAL 1 DAY)
 );

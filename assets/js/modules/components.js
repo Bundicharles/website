@@ -1,6 +1,6 @@
 // ============================================================
 // assets/js/modules/components.js  –  Shared UI components
-// (header, footer, ticker, mobile menu, search)
+// (footer, ticker)
 // ============================================================
 import { api, getAppBase } from './api.js';
 import { esc } from './utils.js';
@@ -17,111 +17,6 @@ export async function getSiteSettings() {
     _siteSettings = {};
   }
   return _siteSettings;
-}
-
-// ── Inject header ──────────────────────────────────────────────
-export async function renderHeader(activePage = '') {
-  const settings = await getSiteSettings();
-  const siteName = 'DK';
-  const siteTagline = settings.site_tagline || '';
-  const base = getAppBase();
-  const navLinks = [
-    { href: `${base}/`, label: 'DK', logo: `${base}/assets/images/logo-dk.svg`, home: true },
-    { href: `${base}/pages/latest.html`,   label: 'Latest News' },
-    { href: `${base}/pages/trending.html`, label: 'Trending' },
-    { href: `${base}/pages/politics.html`, label: 'Politics' },
-    { href: `${base}/pages/documentary.html`, label: 'DK' },
-    { href: `${base}/pages/reports.html`,     label: 'Reports' },
-  ];
-
-  const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-
-  const navHtml = navLinks.map(link => {
-    const linkPath = link.href.replace(/\/$/, '') || '/';
-    const isActive = link.label.toLowerCase() === activePage.toLowerCase()
-                || (currentPath === linkPath)
-                || (activePage === '' && (currentPath === base || currentPath === `${base}/index.html`));
-    const logoImg = link.logo ? `<img src="${link.logo}" alt="${link.label} logo" class="nav-logo-img">` : '';
-    return `<a href="${link.href}" class="nav-link${isActive ? ' active' : ''}${link.home ? ' nav-link-home' : ''}">${logoImg}${link.label}</a>`;
-  }).join('');
-
-  const mobileNavHtml = navLinks.map(link =>
-    `<a href="${link.href}" class="mobile-nav-link${link.home ? ' mobile-nav-link-home' : ''}">${link.logo ? `<img src="${link.logo}" alt="${link.label} logo" class="nav-logo-img">` : ''}${link.label}</a>`
-  ).join('');
-
-  const header = document.getElementById('site-header');
-  if (!header) return;
-
-  header.innerHTML = `
-    <div class="container header-inner">
-     <nav class="primary-nav" aria-label="Main navigation">${navHtml}</nav>
-     <div class="header-right">
-        <button class="search-toggle" id="search-toggle" aria-label="Search">
-          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-        </button>
-        <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile menu -->
-    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
-      ${mobileNavHtml}
-    </nav>
-
-    <!-- Search overlay -->
-    <div class="search-overlay" id="search-overlay" role="dialog" aria-label="Site search" aria-modal="true">
-      <div class="search-box">
-        <form id="search-form" action="${base}/pages/search.html" method="get">
-          <input type="search" name="q" id="search-input" class="search-input"
-                 placeholder="Search ${esc(siteName)}…" autocomplete="off" aria-label="Search query">
-          <button type="submit" class="search-submit" aria-label="Submit search">
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          </button>
-        </form>
-      </div>
-      <button class="search-close" id="search-close" aria-label="Close search">✕</button>
-    </div>
-  `;
-
-  // Scroll shadow
-  const scrollHandler = () => header.classList.toggle('scrolled', window.scrollY > 10);
-  window.addEventListener('scroll', scrollHandler, { passive: true });
-  scrollHandler();
-
-  // Hamburger
-  const hamburger   = document.getElementById('hamburger');
-  const mobileMenu  = document.getElementById('mobile-menu');
-  hamburger?.addEventListener('click', () => {
-    const open = hamburger.classList.toggle('open');
-    mobileMenu.classList.toggle('open', open);
-    hamburger.setAttribute('aria-expanded', open);
-    document.body.style.overflow = open ? 'hidden' : '';
-  });
-
-  // Search
-  const searchToggle  = document.getElementById('search-toggle');
-  const searchOverlay = document.getElementById('search-overlay');
-  const searchClose   = document.getElementById('search-close');
-  const searchInput   = document.getElementById('search-input');
-
-  function openSearch() {
-    searchOverlay.classList.add('open');
-    searchInput?.focus();
-    document.body.style.overflow = 'hidden';
-  }
-  function closeSearch() {
-    searchOverlay.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  searchToggle?.addEventListener('click', openSearch);
-  searchClose?.addEventListener('click', closeSearch);
-  searchOverlay?.addEventListener('click', e => { if (e.target === searchOverlay) closeSearch(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 }
 
 // ── Render footer ──────────────────────────────────────────────
@@ -194,8 +89,8 @@ export async function renderFooter() {
   `;
 }
 
-// ── Breaking news ticker ───────────────────────────────────────
-export async function renderTicker(containerId = 'ticker') {
+// ── Breaking news ticker (static) ───────────────────────────────
+export async function renderTicker(containerId = 'breaking-ticker') {
   const el = document.getElementById(containerId);
   if (!el) return;
 
@@ -207,13 +102,13 @@ export async function renderTicker(containerId = 'ticker') {
     if (!items.length) { el.style.display = 'none'; return; }
 
     const itemsHtml = [...items, ...items].map(item =>
-      `<a href="${base}/article.html?slug=${esc(item.slug)}" class="ticker-item">${esc(item.title)}</a>`
+      `<a href="${base}/article.html?slug=${esc(item.slug)}" class="ticker-item" aria-label="Breaking news: ${esc(item.title)}">${esc(item.title)}</a>`
     ).join('');
 
     el.innerHTML = `
       <div class="container ticker-inner">
-        <span class="ticker-label">Breaking</span>
-        <div class="ticker-track" aria-live="polite" aria-label="Breaking news">
+        <span class="ticker-label" aria-hidden="true">BREAKING</span>
+        <div class="ticker-track" role="list">
           <div class="ticker-items">${itemsHtml}</div>
         </div>
       </div>

@@ -23,6 +23,7 @@
       <a href="./categories.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>Categories</a>
       <a href="./articles.html?category=reports" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Reports</a>
       <a href="./media.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>Media</a>
+      <a href="./engagement.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Engagement</a>
       <a href="./settings.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
       <a href="./messages.html" class="sidebar-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Messages</a>
     </nav>
@@ -169,6 +170,20 @@
           </div>
         </div></div>
 
+        <div class="card"><div class="card-body">
+          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.75rem">Featured Document (Upload)</div>
+          <div id="doc-preview" style="margin-bottom:.75rem"></div>
+          <input type="hidden" id="featured_document">
+          <label class="btn btn-outline btn-sm" style="justify-content:center;cursor:pointer;margin-bottom:.5rem;width:100%">
+            📄 Upload Document
+            <input type="file" id="doc-upload" accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,application/zip" style="display:none">
+          </label>
+          <div class="form-group">
+            <label>Or paste document URL</label>
+            <input type="text" id="doc-url-input" class="form-control" placeholder="/api/uploads/documents/… or https://…">
+          </div>
+        </div></div>
+
         <div id="delete-panel" style="display:none">
           <button type="button" id="delete-btn" class="btn btn-danger" style="width:100%;justify-content:center">?? Delete Article</button>
         </div>
@@ -219,6 +234,8 @@
       document.getElementById('trending_rank').value   = a.trending_rank || 0;
       document.getElementById('featured_image').value  = a.featured_image || '';
       if (a.featured_image) showImgPreview(a.featured_image);
+      document.getElementById('featured_document').value  = a.featured_document || '';
+      if (a.featured_document) showDocPreview(a.featured_document);
       document.getElementById('featured_video').value  = a.featured_video || '';
       if (a.featured_video) showVideoPreview(a.featured_video);
     } catch (err) { toast('Could not load article: ' + err.message, 'error'); }
@@ -249,6 +266,38 @@
     } catch (err) { toast(err.message, 'error'); }
     e.target.value = '';
   });
+
+  // Document upload
+  document.getElementById('doc-upload').addEventListener('change', async e => {
+    const file = e.target.files?.[0]; if (!file) return;
+    try {
+      const fd = new FormData(); fd.append('file', file);
+      const res = await adminFetch('/admin/media', { method:'POST', body:fd, headers:{} });
+      document.getElementById('featured_document').value = res.data.url;
+      showDocPreview(res.data.url);
+      toast('Document uploaded.', 'success');
+    } catch (err) { toast(err.message, 'error'); }
+    e.target.value = '';
+  });
+
+  document.getElementById('doc-url-input').addEventListener('change', e => {
+    const url = e.target.value.trim();
+    if (url) { document.getElementById('featured_document').value = url; showDocPreview(url); }
+  });
+
+  function showDocPreview(url) {
+    const previewUrl = url.startsWith('http') ? url : (base + url);
+    const name = url.split('/').pop();
+    document.getElementById('doc-preview').innerHTML = `<div class="img-preview">
+      <a href="${esc(previewUrl)}" target="_blank" rel="noopener" style="color:var(--accent);font-size:.85rem;word-break:break-all">📄 ${esc(name)}</a>
+      <button type="button" class="img-preview-remove" id="remove-doc">✕</button>
+    </div>`;
+    document.getElementById('remove-doc').addEventListener('click', () => {
+      document.getElementById('featured_document').value = '';
+      document.getElementById('doc-url-input').value = '';
+      document.getElementById('doc-preview').innerHTML = '';
+    });
+  }
 
    document.getElementById('img-url-input').addEventListener('change', e => {
      const url = e.target.value.trim();
@@ -321,6 +370,7 @@
       trending_rank:   parseInt(document.getElementById('trending_rank').value) || 0,
        featured_image:  document.getElementById('featured_image').value.trim(),
        featured_video:  document.getElementById('featured_video').value.trim(),
+       featured_document: document.getElementById('featured_document').value.trim(),
      };
   }
 

@@ -6,6 +6,32 @@ import { getAppBase, getApiBase } from './api.js';
 
 export { getAppBase, getApiBase };
 
+// ── Reference-counted body scroll lock ───────────────────────────
+let _scrollLockCount = 0;
+let _originalOverflow = '';
+
+export function lockBodyScroll() {
+  if (_scrollLockCount === 0) {
+    _originalOverflow = document.body.style.overflow || '';
+    document.body.style.overflow = 'hidden';
+  }
+  _scrollLockCount++;
+}
+
+export function unlockBodyScroll() {
+  _scrollLockCount = Math.max(0, _scrollLockCount - 1);
+  if (_scrollLockCount === 0) {
+    document.body.style.overflow = _originalOverflow;
+  }
+}
+
+export function resetBodyScroll() {
+  _scrollLockCount = 0;
+  if (document.body.style.overflow === 'hidden') {
+    document.body.style.overflow = '';
+  }
+}
+
 // ── Date formatting (Africa/Nairobi) ─────────────────────────
 const dateFormatter = new Intl.DateTimeFormat('en-KE', {
   timeZone:    'Africa/Nairobi',
@@ -441,11 +467,7 @@ export function initVideoModal() {
   const player = document.getElementById('video-modal-player');
   const closeBtn = modal.querySelector('.video-modal-close');
 
-  let wasBodyLocked = false;
-
-  if (document.body.style.overflow === 'hidden') {
-    document.body.style.overflow = '';
-  }
+  resetBodyScroll();
 
   function openVideo(url, title = '') {
     if (!url) return;
@@ -457,20 +479,14 @@ export function initVideoModal() {
     }
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
-    wasBodyLocked = document.body.style.overflow === 'hidden';
-    if (!wasBodyLocked) {
-      document.body.style.overflow = 'hidden';
-    }
+    lockBodyScroll();
   }
 
   function closeVideo() {
     player.innerHTML = '';
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
-    if (!wasBodyLocked) {
-      document.body.style.overflow = '';
-    }
-    wasBodyLocked = false;
+    unlockBodyScroll();
   }
 
   document.addEventListener('click', e => {

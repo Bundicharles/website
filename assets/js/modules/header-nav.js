@@ -1,5 +1,6 @@
 // assets/js/modules/header-nav.js
 // Shared header & navigation behavior: hamburger menu, search overlay, scroll shadow.
+import { lockBodyScroll, unlockBodyScroll, resetBodyScroll } from './utils.js';
 
 export function initHeaderNav() {
   const header = document.getElementById('site-header');
@@ -11,22 +12,7 @@ export function initHeaderNav() {
   const searchClose = document.getElementById('search-close');
   const searchInput = document.getElementById('header-search-input');
 
-  let bodyOverflow = '';
-
-  if (document.body.style.overflow === 'hidden') {
-    document.body.style.overflow = '';
-  }
-
-  function lockBody(lock) {
-    if (lock) {
-      if (document.body.style.overflow !== 'hidden') {
-        bodyOverflow = document.body.style.overflow || '';
-      }
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = bodyOverflow;
-    }
-  }
+  resetBodyScroll();
 
   function openMobileMenu() {
     if (searchOverlay?.classList.contains('open')) closeSearch();
@@ -34,7 +20,7 @@ export function initHeaderNav() {
     hamburger?.classList.add('open');
     hamburger?.setAttribute('aria-expanded', 'true');
     hamburger?.setAttribute('aria-label', 'Close navigation menu');
-    lockBody(true);
+    lockBodyScroll();
   }
 
   function closeMobileMenu() {
@@ -42,7 +28,7 @@ export function initHeaderNav() {
     hamburger?.classList.remove('open');
     hamburger?.setAttribute('aria-expanded', 'false');
     hamburger?.setAttribute('aria-label', 'Toggle navigation menu');
-    lockBody(false);
+    unlockBodyScroll();
   }
 
   function toggleMobileMenu() {
@@ -55,13 +41,13 @@ export function initHeaderNav() {
     searchOverlay?.classList.add('open');
     searchToggle?.setAttribute('aria-expanded', 'true');
     searchInput?.focus();
-    lockBody(true);
+    lockBodyScroll();
   }
 
   function closeSearch() {
     searchOverlay?.classList.remove('open');
     searchToggle?.setAttribute('aria-expanded', 'false');
-    lockBody(false);
+    unlockBodyScroll();
   }
 
   function createMobileCloseButton() {

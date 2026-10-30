@@ -54,6 +54,15 @@
   flex-shrink:   0;
 }
 
+.nav-logo-text {
+  font-family:     var(--font-heading);
+  font-size:       1.25rem;
+  font-weight:     900;
+  color:           var(--text-primary);
+  letter-spacing:  -0.02em;
+  line-height:     1;
+}
+
 /* ── Primary navigation (horizontal) ── */
 .primary-nav {
   display:     flex;
@@ -206,6 +215,23 @@
   color:      var(--text-primary);
 }
 
+.hamburger svg line {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+
+.hamburger.open line:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.hamburger.open line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open line:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
 /* ── Mobile menu ── */
 .mobile-menu {
   position:   fixed;
@@ -217,16 +243,42 @@
   z-index:    999;
   max-height: calc(100vh - var(--header-h));
   overflow-y: auto;
+  transform:  translateY(-10px);
   opacity:    0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity var(--trans-fast), visibility var(--trans-fast);
+  transition: opacity var(--trans-fast), visibility var(--trans-fast), transform var(--trans-fast);
 }
 
 .mobile-menu.open {
   opacity:    1;
   visibility: visible;
   pointer-events: auto;
+  transform:  translateY(0);
+}
+
+/* Mobile menu close button */
+.mobile-menu-close-btn {
+  position:     sticky;
+  top:          0;
+  right:        0;
+  align-self:   flex-end;
+  margin:       0.75rem 0.75rem 0 0;
+  width:        36px;
+  height:       36px;
+  border-radius: var(--radius-sm);
+  background:    var(--bg-card);
+  border:        1px solid var(--border);
+  color:         var(--text-secondary);
+  font-size:     1.25rem;
+  cursor:        pointer;
+  z-index:        10;
+  transition:     background var(--trans-fast), color var(--trans-fast);
+}
+
+.mobile-menu-close-btn:hover {
+  background: var(--bg-card);
+  color:      var(--red);
 }
 
 .mobile-nav-link {
@@ -262,6 +314,9 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
+  .header-inner { gap: var(--space-sm); }
+  .nav-logo-img { width: 28px; height: 28px; }
+  .nav-logo-text { font-size: 1.1rem; }
   .primary-nav { display: none; }
   .hamburger   { display: flex; }
 

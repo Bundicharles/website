@@ -25,14 +25,20 @@ export function initHeaderNav() {
   function openMobileMenu() {
     if (searchOverlay?.classList.contains('open')) closeSearch();
     mobileMenu?.classList.add('open');
+    hamburger?.classList.add('open');
     hamburger?.setAttribute('aria-expanded', 'true');
+    hamburger?.setAttribute('aria-label', 'Close navigation menu');
     lockBody(true);
   }
+
   function closeMobileMenu() {
     mobileMenu?.classList.remove('open');
+    hamburger?.classList.remove('open');
     hamburger?.setAttribute('aria-expanded', 'false');
+    hamburger?.setAttribute('aria-label', 'Toggle navigation menu');
     lockBody(false);
   }
+
   function toggleMobileMenu() {
     const expanded = hamburger?.getAttribute('aria-expanded') === 'true';
     expanded ? closeMobileMenu() : openMobileMenu();
@@ -45,10 +51,22 @@ export function initHeaderNav() {
     searchInput?.focus();
     lockBody(true);
   }
+
   function closeSearch() {
     searchOverlay?.classList.remove('open');
     searchToggle?.setAttribute('aria-expanded', 'false');
     lockBody(false);
+  }
+
+  function createMobileCloseButton() {
+    if (!mobileMenu || mobileMenu.querySelector('.mobile-menu-close-btn')) return;
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'mobile-menu-close-btn';
+    closeBtn.id = 'mobile-menu-close';
+    closeBtn.setAttribute('aria-label', 'Close menu');
+    closeBtn.innerHTML = '✕';
+    closeBtn.addEventListener('click', closeMobileMenu);
+    mobileMenu.insertBefore(closeBtn, mobileMenu.firstChild);
   }
 
   hamburger?.addEventListener('click', toggleMobileMenu);
@@ -80,6 +98,8 @@ export function initHeaderNav() {
   searchOverlay?.addEventListener('click', e => {
     if (e.target === searchOverlay) closeSearch();
   });
+
+  createMobileCloseButton();
 
   if (header) {
     const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 10);

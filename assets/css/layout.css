@@ -55,12 +55,7 @@
 }
 
 .nav-logo-text {
-  font-family:     var(--font-heading);
-  font-size:       1.25rem;
-  font-weight:     900;
-  color:           var(--text-primary);
-  letter-spacing:  -0.02em;
-  line-height:     1;
+  display: none;
 }
 
 /* ── Primary navigation (horizontal) ── */
@@ -315,8 +310,6 @@
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .header-inner { gap: var(--space-sm); }
-  .nav-logo-img { width: 28px; height: 28px; }
-  .nav-logo-text { font-size: 1.1rem; }
   .primary-nav { display: none; }
   .hamburger   { display: flex; }
 

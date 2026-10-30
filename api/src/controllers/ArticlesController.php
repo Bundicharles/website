@@ -410,4 +410,25 @@ class ArticlesController {
             'time'    => date('c'),
         ]);
     }
+
+    // ── GET /api/uploads/images/{filename} ─────────────────
+    public function serveImage(string $filename): void {
+        if (!defined('UPLOAD_PATH')) {
+            jsonError(500, 'Upload path not configured.');
+        }
+
+        $filepath = UPLOAD_PATH . '/' . $filename;
+
+        if (!file_exists($filepath) || !is_file($filepath)) {
+            jsonError(404, 'File not found.');
+        }
+
+        $mimeType = mime_content_type($filepath) ?: 'application/octet-stream';
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Length: ' . filesize($filepath));
+        header('X-Content-Type-Options: nosniff');
+        readfile($filepath);
+        exit;
+    }
 }

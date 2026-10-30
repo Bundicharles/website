@@ -78,6 +78,7 @@ if ($resource !== 'admin') {
         $method === 'GET'  && $resource === 'search'                       => $articles->search(),
         $method === 'GET'  && $resource === 'categories'                   => $articles->categories(),
         $method === 'GET'  && $resource === 'settings'                     => $articles->settings(),
+        $method === 'GET'  && $resource === 'uploads' && $sub === 'images' && $id !== '' => $articles->serveImage($id),
         $method === 'POST' && $resource === 'contact'                      => $contact->submit(),
         default => jsonError(404, 'Endpoint not found.'),
     };

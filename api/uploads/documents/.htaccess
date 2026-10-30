@@ -1,0 +1,37 @@
+# Security: prevent script execution in documents directory
+Options -Indexes -ExecCGI
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh)$">
+        Require all denied
+    </FilesMatch>
+    Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    Order allow,deny
+    Allow from all
+</IfModule>
+
+# Cache headers for documents (short TTL, allow revalidation)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/pdf "access plus 1 day"
+    ExpiresByType application/msword "access plus 1 day"
+    ExpiresByType application/vnd.openxmlformats-officedocument.wordprocessingml.document "access plus 1 day"
+    ExpiresByType application/vnd.ms-excel "access plus 1 day"
+    ExpiresByType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet "access plus 1 day"
+    ExpiresByType text/plain "access plus 1 day"
+    ExpiresByType application/zip "access plus 1 day"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(pdf|doc|docx|xls|xlsx|txt|zip)$">
+        Header set Cache-Control "public, max-age=86400"
+        Header set Access-Control-Allow-Origin "*"
+        Header set X-Content-Type-Options "nosniff"
+        Header set X-Frame-Options "SAMEORIGIN"
+    </FilesMatch>
+</IfModule>

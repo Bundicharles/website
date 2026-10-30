@@ -32,14 +32,18 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 # PHP settings (guarded so cPanel / LiteSpeed won't throw 500)
 # ------------------------------------------------------------------
 <IfModule mod_php8.c>
-    php_value upload_max_filesize 10M
-    php_value post_max_size 12M
-    php_value max_execution_time 60
+    php_value upload_max_filesize 55M
+    php_value post_max_size 58M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
 </IfModule>
 <IfModule mod_php.c>
-    php_value upload_max_filesize 10M
-    php_value post_max_size 12M
-    php_value max_execution_time 60
+    php_value upload_max_filesize 55M
+    php_value post_max_size 58M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 256M
 </IfModule>
 
 # ------------------------------------------------------------------
@@ -50,4 +54,19 @@ RewriteRule ^(.*)$ index.php [QSA,L]
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ------------------------------------------------------------------
+# Cache headers for uploaded static assets
+# ------------------------------------------------------------------
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpe?g|png|gif|webp|bmp|svg|ico|avif)$">
+        Header set Cache-Control "public, max-age=2592000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(mp4|webm|ogg|ogv|mov|avi|wmv)$">
+        Header set Cache-Control "public, max-age=604800, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(pdf|doc|docx|xls|xlsx|txt|zip)$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
 </IfModule>

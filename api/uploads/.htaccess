@@ -1,7 +1,7 @@
 # Prevent script execution in uploads directory
 Options -Indexes -ExecCGI
 <IfModule mod_authz_core.c>
-    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh)$">
+    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh|sh\.bat)$">
         Require all denied
     </FilesMatch>
     # Allow access to all other files (images, etc.)
@@ -15,4 +15,39 @@ Options -Indexes -ExecCGI
     # Fallback for older Apache versions
     Order allow,deny
     Allow from all
+</IfModule>
+
+# ------------------------------------------------------------------
+# Cache headers for uploaded static assets
+# ------------------------------------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg   "access plus 30 days"
+    ExpiresByType image/png    "access plus 30 days"
+    ExpiresByType image/gif    "access plus 30 days"
+    ExpiresByType image/webp   "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType video/mp4    "access plus 7 days"
+    ExpiresByType video/webm   "access plus 7 days"
+    ExpiresByType application/pdf "access plus 1 day"
+    ExpiresByType application/msword "access plus 1 day"
+    ExpiresByType application/vnd.openxmlformats-officedocument.wordprocessingml.document "access plus 1 day"
+    ExpiresByType application/vnd.ms-excel "access plus 1 day"
+    ExpiresByType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet "access plus 1 day"
+    ExpiresByType text/plain   "access plus 1 day"
+    ExpiresByType application/zip "access plus 1 day"
+</IfModule>
+
+# Add Cache-Control header for modern browsers and CDNs
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpe?g|png|gif|webp|bmp|svg|ico|avif)$">
+        Header set Cache-Control "public, max-age=2592000, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(mp4|webm|ogg|ogv|mov|avi|wmv)$">
+        Header set Cache-Control "public, max-age=604800, immutable"
+    </FilesMatch>
+    <FilesMatch "\.(pdf|doc|docx|xls|xlsx|txt|zip)$">
+        Header set Cache-Control "public, max-age=86400"
+    </FilesMatch>
 </IfModule>

@@ -1,0 +1,38 @@
+# Security: prevent script execution in images directory
+Options -Indexes -ExecCGI
+<IfModule mod_authz_core.c>
+    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh)$">
+        Require all denied
+    </FilesMatch>
+    Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+    <FilesMatch "\.(php|php5|phtml|phar|cgi|pl|sh)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+    Order allow,deny
+    Allow from all
+</IfModule>
+
+# Cache headers for images (long TTL, immutable)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg   "access plus 30 days"
+    ExpiresByType image/png    "access plus 30 days"
+    ExpiresByType image/gif    "access plus 30 days"
+    ExpiresByType image/webp   "access plus 30 days"
+    ExpiresByType image/avif   "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType image/bmp    "access plus 30 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(jpe?g|png|gif|webp|avif|bmp|ico|svg)$">
+        Header set Cache-Control "public, max-age=2592000, immutable"
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

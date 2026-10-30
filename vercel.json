@@ -18,6 +18,25 @@
       ]
     },
     {
+      "source": "/api/uploads/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, immutable" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/api/uploads/documents/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/api/uploads/videos/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, immutable" }
+      ]
+    },
+    {
       "source": "/assets/js/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=3600" }

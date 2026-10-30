@@ -9,6 +9,7 @@ api/.env
 # Uploads (don't commit user uploads to git)
 api/uploads/images/*
 !api/uploads/images/.gitkeep
+!api/uploads/images/.htaccess
 
 # Setup script (delete after use)
 api/setup/
@@ -41,6 +42,7 @@ api/sessions/*
 # Private and generated uploads
 api/uploads/images/*
 !api/uploads/images/.gitkeep
+!api/uploads/images/.htaccess
 
 # Temporary setup scripts
 api/setup/
@@ -52,3 +54,4 @@ api/setup/
 # Documents uploads (don't commit user uploads to git)
 api/uploads/documents/*
 !api/uploads/documents/.gitkeep
+!api/uploads/documents/.htaccess

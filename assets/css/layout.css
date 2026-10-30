@@ -309,8 +309,8 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .nav-brand { display: none; }
-  .header-inner { gap: var(--space-sm); justify-content: flex-end; }
+  .nav-brand { display: inline-flex; }
+  .header-inner { gap: var(--space-sm); justify-content: space-between; }
   .primary-nav { display: none; }
   .hamburger   { display: flex; }
 

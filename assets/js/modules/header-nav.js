@@ -13,9 +13,15 @@ export function initHeaderNav() {
 
   let bodyOverflow = '';
 
+  if (document.body.style.overflow === 'hidden') {
+    document.body.style.overflow = '';
+  }
+
   function lockBody(lock) {
     if (lock) {
-      bodyOverflow = document.body.style.overflow || '';
+      if (document.body.style.overflow !== 'hidden') {
+        bodyOverflow = document.body.style.overflow || '';
+      }
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = bodyOverflow;

@@ -95,7 +95,7 @@ body {
   width:            100%;
   max-width:        100%;
   position:         relative;
-  overscroll-behavior: none;
+  overscroll-behavior: contain;
 }
 
 main, section, header, footer {

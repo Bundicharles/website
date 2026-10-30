@@ -441,6 +441,12 @@ export function initVideoModal() {
   const player = document.getElementById('video-modal-player');
   const closeBtn = modal.querySelector('.video-modal-close');
 
+  let wasBodyLocked = false;
+
+  if (document.body.style.overflow === 'hidden') {
+    document.body.style.overflow = '';
+  }
+
   function openVideo(url, title = '') {
     if (!url) return;
     const isDirect = url.match(/\.(mp4|webm|ogg|ogv|mov|mkv|avi|wmv)/i);
@@ -451,14 +457,20 @@ export function initVideoModal() {
     }
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
+    wasBodyLocked = document.body.style.overflow === 'hidden';
+    if (!wasBodyLocked) {
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   function closeVideo() {
     player.innerHTML = '';
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    if (!wasBodyLocked) {
+      document.body.style.overflow = '';
+    }
+    wasBodyLocked = false;
   }
 
   document.addEventListener('click', e => {
